@@ -789,8 +789,6 @@ module.exports = {
                     }
                 }
             }
-            }
-            }
             // deleting bomber bombs if dead
             setTimeout(async function () {
                 let bb = message.guild.channels.cache.filter((c) => c.name === "priv-bomber").map((x) => x.id)
