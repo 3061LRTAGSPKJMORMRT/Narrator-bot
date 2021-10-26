@@ -218,8 +218,9 @@ module.exports = {
                 }
             }
             let players = db.get(`trickortreat_${jack[i]}`)
+            console.log(players)
             if (players != null) {
-                for (let a = 0; a < players.length; a++) {
+            for (let a = 0; a < players.length; a++) {
                     let guy = message.guild.members.cache.find((m) => m.nickname === players[a])
                     let allChannels = message.guild.channels.cache.filter((c) => c.name === `priv-${db.get(`role_${guy.id}`).toLowerCase().replace(" ", "-")}`).map((x) => x.id)
                     for (let b = 0; b < allChannels.length; b++) {
@@ -228,6 +229,7 @@ module.exports = {
                             console.log("g")
                             b = 99
                             let choice = db.get(`choice_${chan.id}`)
+                            console.log(choice)
                             let punish = db.get(`punish_${jack[i]}`)
                             if (choice == undefined) {
                                 dayChat.send(`Jack has punished **${guy.nickname} ${guy.user.username} (${db.get(`role_${guy.id}`)})`)
@@ -323,9 +325,11 @@ module.exports = {
                             }
                         }
                     }
-                }
+                
+            }
             }
         }
+
         // removing all kills if peace is activated
         for (let i = 0; i < prog.length; i++) {
             let peace = db.get(`peace_${prog[i]}`) || "no"
