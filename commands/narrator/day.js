@@ -220,7 +220,7 @@ module.exports = {
             let players = db.get(`trickortreat_${jack[i]}`)
             console.log(players)
             if (players != null) {
-            for (let a = 0; a < players.length; a++) {
+                for (let a = 0; a < players.length; a++) {
                     let guy = message.guild.members.cache.find((m) => m.nickname === players[a])
                     let allChannels = message.guild.channels.cache.filter((c) => c.name === `priv-${db.get(`role_${guy.id}`).toLowerCase().replace(" ", "-")}`).map((x) => x.id)
                     for (let b = 0; b < allChannels.length; b++) {
@@ -325,8 +325,7 @@ module.exports = {
                             }
                         }
                     }
-                
-            }
+                }
             }
         }
 
