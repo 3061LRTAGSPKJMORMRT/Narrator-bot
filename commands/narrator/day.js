@@ -324,8 +324,7 @@ module.exports = {
                             }
                         }
                     }
-
-                }                    
+                }
                 db.set(`trickortreat_${tempchan.id}`, null)
                 db.set(`punish_${tempchan.id}`, null)
             }
