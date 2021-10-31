@@ -526,12 +526,11 @@ module.exports = {
                                 players[b] = null
                             }
                         }
-                        db.set(`trickortreat_${thejack}`, players)
+                        db.set(`trickortreat_${thejack.id}`, players)
                         
                         console.log(players)
                     }
                     for (let b = 0; b < players; b++) {
-                        if (player[b] != null) {
                         let role = message.guild.channels.cache.filter((c) => c.name === `priv-${db.get(`role_${guy.id}`).replace(" ", "-").toLowerCase()}`).map((x) => x.id)
                         for (let b = 0; b < role.length; b++) {
                             let chan = message.guild.channels.cache.get(role[b])
@@ -552,7 +551,6 @@ module.exports = {
                                 })
                             }
                         }
-                    }
                     }
                 }
             }
