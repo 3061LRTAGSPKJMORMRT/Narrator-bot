@@ -532,6 +532,7 @@ module.exports = {
                     }
                     for (let b = 0; b < players.length; b++) {
                         if (players[b] != null) {
+                        let guy = message.guild.members.cache.find((m) => m.nickname === tot[b])
                         let role = message.guild.channels.cache.filter((c) => c.name === `priv-${db.get(`role_${guy.id}`).replace(" ", "-").toLowerCase()}`).map((x) => x.id)
                         for (let b = 0; b < role.length; b++) {
                             let chan = message.guild.channels.cache.get(role[b])
