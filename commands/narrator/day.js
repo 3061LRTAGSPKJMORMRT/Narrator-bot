@@ -1,6 +1,7 @@
 const db = require("quick.db")
 const shuffle = require("shuffle-array")
 const { getRole, getEmoji } = require("../../config")
+const { player } = require("../../config/src/ids")
 
 module.exports = {
     name: "day",
@@ -221,6 +222,7 @@ module.exports = {
             console.log(players)
             if (players != null) {
                 for (let a = 0; a < players.length; a++) {
+                    if (players[a] != null) {
                     let guy = message.guild.members.cache.find((m) => m.nickname === players[a])
                     let allChannels = message.guild.channels.cache.filter((c) => c.name === `priv-${db.get(`role_${guy.id}`).toLowerCase().replace(" ", "-")}`).map((x) => x.id)
                     for (let b = 0; b < allChannels.length; b++) {
@@ -324,6 +326,7 @@ module.exports = {
                             }
                         }
                     }
+                }
                 }
                 db.set(`trickortreat_${tempchan.id}`, null)
                 db.set(`punish_${tempchan.id}`, null)
