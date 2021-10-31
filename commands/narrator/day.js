@@ -321,10 +321,8 @@ module.exports = {
                                     killedplayers.push(guy.id)
                                     thekiller.push(theJack.id)
                                 }
-                            }                                
-
-                        }                            
-
+                            }
+                        }
                     }
 
                 }                    
