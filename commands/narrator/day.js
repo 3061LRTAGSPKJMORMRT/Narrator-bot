@@ -312,7 +312,7 @@ module.exports = {
                                 if (players[a] != null) {
                                     console.log("h")
                                     let role = db.get(`role_${guy.id}`)
-                                    dayChat.send(`Jack punished**${guy.nickname} ${guy.user.username} (${role})**!`)
+                                    dayChat.send(`Jack punished **${guy.nickname} ${guy.user.username} (${role})**!`)
                                     if (role == "Cupid") {
                                         cupidKilled = true
                                     }
@@ -322,9 +322,10 @@ module.exports = {
                                     thekiller.push(theJack.id)
                                 }
                             }                                
-                            db.set(`trickortreat_${tempchan.id}`, null)
-                            db.set(`punish_${tempchan.id}`, null)
-                        }
+
+                        }                            
+                        db.set(`trickortreat_${tempchan.id}`, null)
+                        db.set(`punish_${tempchan.id}`, null)
                     }
                 }
             }
