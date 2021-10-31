@@ -527,7 +527,7 @@ module.exports = {
                             }
                         }
                         db.set(`trickortreat_${thejack.id}`, players)
-                        
+
                         console.log(players)
                     }
                     for (let b = 0; b < players.length; b++) {
@@ -554,9 +554,9 @@ module.exports = {
                             }
                         }
                     }
-                    }
                 }
             }
+        }
 
             let jailedchat = message.guild.channels.cache.find((c) => c.name === "jailed-chat")
             for (let q = 0; q < jailers.length; q++) {
