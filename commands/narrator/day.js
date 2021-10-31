@@ -315,9 +315,9 @@ module.exports = {
                                     killedplayers.push(guy.id)
                                     thekiller.push(theJack.id)
                                 }
-                                db.set(`trickortreat_${tempchan.id}`, null)
-                                db.set(`punish_${tempchan.id}`, null)
-                            }
+                            }                                
+                            db.set(`trickortreat_${tempchan.id}`, null)
+                            db.set(`punish_${tempchan.id}`, null)
                         }
                     }
                 }
