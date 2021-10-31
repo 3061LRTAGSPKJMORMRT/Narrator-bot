@@ -532,31 +532,31 @@ module.exports = {
                     }
                     for (let b = 0; b < players.length; b++) {
                         if (players[b] != null) {
-                        let guy = message.guild.members.cache.find((m) => m.nickname === tot[b])
-                        let role = message.guild.channels.cache.filter((c) => c.name === `priv-${db.get(`role_${guy.id}`).replace(" ", "-").toLowerCase()}`).map((x) => x.id)
-                        for (let b = 0; b < role.length; b++) {
-                            let chan = message.guild.channels.cache.get(role[b])
-                            if (chan.permissionsFor(guy).has(["VIEW_CHANNEL", "READ_MESSAGE_HISTORY"])) {
-                                console.log("l")
-                                let trick = new MessageButton()
-                                    .setStyle("SUCCESS")
-                                    .setLabel("Trick")
-                                    .setCustomId("trick_" + chan.id)
-                                let treat = new MessageButton()
-                                    .setStyle("SUCCESS")
-                                    .setLabel("Treat")
-                                    .setCustomId("treat_" + chan.id)
-                                const row = new MessageActionRow().addComponents(treat, trick)
-                                chan.send({ content: "Jack is trick-or-treating and has decided to visit your house, Will you choose to trick or treat?", components: [row] })
-                                chan.permissionOverwrites.edit(guy.id, {
-                                    SEND_MESSAGES: false,
-                                })
+                            let guy = message.guild.members.cache.find((m) => m.nickname === tot[b])
+                            let role = message.guild.channels.cache.filter((c) => c.name === `priv-${db.get(`role_${guy.id}`).replace(" ", "-").toLowerCase()}`).map((x) => x.id)
+                            for (let b = 0; b < role.length; b++) {
+                                let chan = message.guild.channels.cache.get(role[b])
+                                if (chan.permissionsFor(guy).has(["VIEW_CHANNEL", "READ_MESSAGE_HISTORY"])) {
+                                    console.log("l")
+                                    let trick = new MessageButton()
+                                        .setStyle("SUCCESS")
+                                        .setLabel("Trick")
+                                        .setCustomId("trick_" + chan.id)
+                                    let treat = new MessageButton()
+                                        .setStyle("SUCCESS")
+                                        .setLabel("Treat")
+                                        .setCustomId("treat_" + chan.id)
+                                    const row = new MessageActionRow().addComponents(treat, trick)
+                                    chan.send({ content: "Jack is trick-or-treating and has decided to visit your house, Will you choose to trick or treat?", components: [row] })
+                                    chan.permissionOverwrites.edit(guy.id, {
+                                        SEND_MESSAGES: false,
+                                    })
+                                }
                             }
                         }
                     }
                 }
             }
-        }
 
             let jailedchat = message.guild.channels.cache.find((c) => c.name === "jailed-chat")
             for (let q = 0; q < jailers.length; q++) {
