@@ -484,11 +484,11 @@ module.exports = {
                 let chan = message.guild.channels.cache.get(jack[i])
                 for (let j = 1; j <= 16; j++) {
                     let tempguy = message.guild.members.cache.find((m) => m.nickname === j.toString())
-                    for (let x = 0; x < jailers.length; x++) {
-                        let jailer = message.guild.channels.cache.get(jailers[i])
                         if (tempguy) {
                             if (chan.permissionsFor(tempguy).has(["VIEW_CHANNEL"])) {
                                 j = 99
+                                for (let x = 0; x < jailers.length; x++) {
+                                    let jailer = message.guild.channels.cache.get(jailers[i])
                                 if (tempguy.roles.cache.has(dead.id) || db.get(`jail_${jailer}`) == tempguy.nickname) {
                                     db.delete(`punish_${chan.id}`)
                                     db.delete(`trickortreat_${chan.id}`)
