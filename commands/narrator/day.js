@@ -324,13 +324,13 @@ module.exports = {
                             }                                
 
                         }                            
+
                     }
                     db.set(`trickortreat_${tempchan.id}`, null)
                     db.set(`punish_${tempchan.id}`, null)
                 }
             }
         }
-
 
         // removing all kills if peace is activated
         for (let i = 0; i < prog.length; i++) {
@@ -358,7 +358,6 @@ module.exports = {
                 args[0] = "0"
             }
         }
-
 
         // getting kills from hacker
         for (let i = 0; i < hacker.length; i++) {
