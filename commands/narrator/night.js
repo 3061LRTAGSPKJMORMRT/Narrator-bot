@@ -2,6 +2,7 @@ const db = require("quick.db")
 const { MessageButton, MessageActionRow } = require("discord.js")
 
 const { getEmoji, getRole, fn } = require("../../config")
+const { player } = require("../../config/src/ids")
 function peaceCheck(message) {
     let prog = message.guild.channels.cache.filter((c) => c.name === "priv-prognosticator").map((x) => x.id)
     let nightCount = Math.floor(db.get(`gamePhase`) / 3) + 1
@@ -526,7 +527,11 @@ module.exports = {
                             }
                         }
                         db.set(`trickortreat_${thejack}`, players)
+                        
                         console.log(players)
+                    }
+                    for (let b = 0; b < players; b++) {
+                        if (player[b] != null) {
                         let role = message.guild.channels.cache.filter((c) => c.name === `priv-${db.get(`role_${guy.id}`).replace(" ", "-").toLowerCase()}`).map((x) => x.id)
                         for (let b = 0; b < role.length; b++) {
                             let chan = message.guild.channels.cache.get(role[b])
@@ -547,6 +552,7 @@ module.exports = {
                                 })
                             }
                         }
+                    }
                     }
                 }
             }
