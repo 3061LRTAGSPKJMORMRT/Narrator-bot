@@ -552,7 +552,7 @@ module.exports = {
                             }
                         }
                     }
-                    let bless = db.get(`bless_${aww[x}`) || "None"
+                    let bless = db.get(`bless_${aww[x]}`) || "None"
                   let guy = message.guild.members.cache.find((m) => m.nickname === bless)
                   let role = message.guild.channels.cache.filter((c) => c.name === `priv-${db.get(`role_${guy.id}`).replace(" ", "-").toLowerCase()}`).map((x) => x.id)
                         for (let b = 0; b < role.length; b++) {
