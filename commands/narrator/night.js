@@ -194,6 +194,7 @@ module.exports = {
             let corr = message.guild.channels.cache.filter((c) => c.name === "priv-corruptor").map((x) => x.id)
             let as = message.guild.channels.cache.filter((c) => c.name === "priv-aura-seer").map((x) => x.id)
             let dc = message.guild.channels.cache.filter((c) => c.name === "priv-dreamcatcher").map((x) => x.id)
+            let aww = message.guild.channels.cache.filter((c) => c.name === "priv-astral-wolf").map((x) => x.id)
             let s = message.guild.channels.cache.filter((c) => c.name === "priv-seer").map((x) => x.id)
             let det = message.guild.channels.cache.filter((c) => c.name === "priv-detective").map((x) => x.id)
             let sorc = message.guild.channels.cache.filter((c) => c.name === "priv-sorcerer").map((x) => x.id)
@@ -362,7 +363,6 @@ module.exports = {
                         }
                     }
                 }
-                console.log(dc)
                 for (let a = 0; a < dc.length; a++) {
                     let hypnotize = db.get(`hypnotize_${dc[a]}`)
                     if (hypnotize != null) {
@@ -537,7 +537,54 @@ module.exports = {
                         }
                     }
                 }
-
+                
+                for (let x = 0; x < aww.length; x++) {
+                  let astral = message.guild.channels.cache.get(aww[x])
+                  for (let j = 1; j <= alive.members.size + dead.members.size; j++) {
+                        let who = message.guild.members.cache.find((m) => m.nickname === j.toString())
+                        if (who) {
+                            let rrrr = db.get(`role_${who.id}`).toLowerCase()
+                            if (rrrr.includes("astral")) {
+                                if (who.roles.cache.has(alive.id)) {
+                                } else {
+                                    db.delete(`bless_${aww[x]}`)
+                                }
+                            }
+                        }
+                    }
+                    let bless = db.get(`bless_${aww[x}`) || "None"
+                  let guy = message.guild.members.cache.find((m) => m.nickname === bless)
+                  let role = message.guild.channels.cache.filter((c) => c.name === `priv-${db.get(`role_${guy.id}`).replace(" ", "-").toLowerCase()}`).map((x) => x.id)
+                        for (let b = 0; b < role.length; b++) {
+                            console.log(guy.id)
+                            let chann = message.guild.channels.cache.get(role[b])
+                            if (chann.permissionsFor(guy).has(["VIEW_CHANNEL", "READ_MESSAGE_HISTORY"])) {
+                  if (guy) {
+                    if (guy.roles.cache.has(dead.id)) {
+                      bless = "None"
+                      db.delete(`bless_${aww[x]}`)
+                    }
+                    if (bless != "None") {
+                      
+                  let chan = message.guild.channels.create('priv-seer', {
+                    parent: "892046231516368906"
+                  })
+                  chan.permissionOverwrites.edit(guy.id, {
+                    SEND_MESSAGES: true,
+                    READ_MESSAGE_HISTORY: true,
+                    VIEW_CHANNEL: true,
+                  })
+                  chan.send(`<@&${alive.id}> The Astral Wolf has blessed you with the powers of a Seer for 1 night! use \`+check <player>\` to check a player`)
+                  chann.permissionOverwrites.edit(guy.id, {
+                    SEND_MESSAGES: false
+                  })
+                  db.delete(`bless_${aww[x]}`)
+                  db.set(`usedBless_${aww[x]}`, true)
+                    }
+                  }
+                    }
+                  }
+                }
                 let jailedchat = message.guild.channels.cache.find((c) => c.name === "jailed-chat")
                 for (let q = 0; q < jailers.length; q++) {
                     let jailer = message.guild.channels.cache.get(jailers[q])
