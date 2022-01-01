@@ -17,8 +17,8 @@ module.exports = {
         //await sleep(1000)
         //await clearSettings(message)
         //await sleep(1000)
-        await clearJoin(client)
-        await endGame(client)
+        await clearJoin(message.client)
+        await endGame(message.client)
         m.edit("Game end complete!").catch(() => {})
     },
 }
