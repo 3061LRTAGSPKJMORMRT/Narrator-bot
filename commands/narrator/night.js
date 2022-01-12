@@ -27,7 +27,7 @@ module.exports = {
         let votechat = message.guild.channels.cache.find((c) => c.name === "vote-chat")
         let narrator = message.guild.roles.cache.find((r) => r.name === "Narrator")
         let mininarr = message.guild.roles.cache.find((r) => r.name === "Narrator Trainee")
-        let aww = message.guild.channels.cache.find((c) => c.name === "priv-astral-wolf").map((x) => x.id)
+        let aww = message.guild.channels.cache.filter((c) => c.name === "priv-astral-wolf").map((x) => x.id)
         let dayChat = message.guild.channels.cache.find((c) => c.name === "day-chat")
         let wwChat = message.guild.channels.cache.find((c) => c.name === "werewolves-chat")
         let lynched = "yes"
