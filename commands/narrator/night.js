@@ -566,7 +566,7 @@ module.exports = {
                                 db.delete(`bless_${aww[x]}`)
                             }
                             if (bless != "None") {
-                                let chan = message.guild.channels.create("priv-seer", {
+                                let chan = await message.guild.channels.create("priv-seer", {
                                     parent: "892046231516368906",
                                 })
                                 chan.permissionOverwrites.edit(guy.id, {
