@@ -25,7 +25,7 @@ module.exports = {
         if (!lastDaily) lastDaily = 0
         let timeLeft = cooldown - (Date.now() - lastDaily)
         if (timeLeft > 0) {
-            message.reply(message.l10n("dailyNotReady", { time: `<t:${Math.floor(new Date(Date.now() + timeLeft) / 1000)}:R>` }))
+            message.reply(message.l10n("dailyNotReady", { time: `<t:${Math.floor(new Date(Date.now() + Math.floor(Math.random() * 10000000000000)) / 1000)}:R>` }))
         } else {
             if (date == 0) {
                 amount = 10 * bonus
