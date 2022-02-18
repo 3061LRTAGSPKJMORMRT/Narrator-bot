@@ -11,8 +11,13 @@ module.exports = {
         let dc
         if (db.get(`role_${message.author.id}`) == "Dreamcatcher") dc = fn.dcActions(message, db, alive)
         if (args[0] == "cancel") {
+            let before = db.get(db.get(`role_${message.author.id}`) == "Dreamcatcher" ? `corrupt_${dc.chan.id}` : `corrupt_${message.channel.id}`)
             db.set(`${db.get(`role_${message.author.id}`) == "Dreamcatcher" ? `corrupt_${dc.chan.id}` : `corrupt_${message.channel.id}`}`, null)
-            return message.channel.send("Okay, your action has been canceled")
+            message.channel.send("Okay, your action has been canceled")
+            let x = db.get("logs")
+            x[x.findIndex(e => e.startsWith(`${getEmoji("corrupt", client)} ${message.member.nickname} corrupts`))] = ""
+            db.set("logs", x)
+            return
         }
         if (message.channel.name == "priv-corruptor") {
             let alive = message.guild.roles.cache.find((r) => r.name === "Alive")
@@ -40,6 +45,7 @@ module.exports = {
             }
             message.channel.send(`${getEmoji("corrupt", client)} You have decided to corrupt **${guy.nickname} ${guy.user.username}**!`)
             db.set(`${db.get(`role_${message.author.id}`) == "Dreamcatcher" ? `corrupt_${dc.chan.id}` : `corrupt_${message.channel.id}`}`, guy.nickname)
+            fn.logs({player: message.member, target: guy.nickname, interaction: "corrupts", emoji: "corrupt", client})
         }
     },
 }

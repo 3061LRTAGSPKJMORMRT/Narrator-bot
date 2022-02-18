@@ -486,5 +486,22 @@ module.exports = {
         interaction.editReply("If everything looks correct, use `+startgame` to start the game!")
         db.set(`gamePhase`, -1)
         db.set(`gamemode`, gamemode)
+        let logs = ""
+        let dead = message.guild.roles.cache.find((r) => r.name === "Dead").members.size
+        let c = message.guild.channels.cache.filter((c) => c.name.startsWith("priv"))
+        let ch = c.map((x) => x.id)
+        for (let i = 1; i <= alive + dead; i++) {
+            let guy = message.guild.members.cache.find((m) => m.nickname === i.toString())
+            for (let b = 0; b < ch.length; b++) {
+                let cha = message.guild.channels.cache.find((channel) => channel.id === ch[b])
+                if (cha.permissionsFor(guy).has(["VIEW_CHANNEL", "READ_MESSAGE_HISTORY"])) {
+                    let role = db.get(`role_${guy.id}`)
+                    let emoji = client.emojis.cache.find((e) => e.name === role)
+                    if (!emoji) emoji = role
+                    logs += `${emoji} ${guy.nickname}. ${guy.user.tag}\n`
+                }
+            }
+        }
+        db.set("logs", "**Playerinfo**" + logs + "\n\n**Night 1**")
     },
-}
+} 

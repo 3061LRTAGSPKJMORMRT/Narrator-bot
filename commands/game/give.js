@@ -34,6 +34,7 @@ module.exports = {
             }
             message.channel.send(`${getEmoji("moon", client)} You gave a card to **${guy.nickname} ${guy.user.username}**`)
             db.subtract(`${db.get(`role_${message.author.id}`) == "Dreamcatcher" ? `cards_${dc.chan.id}` : `cards_${message.channel.id}`}`, 1)
+            fn.logs({player: message.member, target: args[0], interaction: "gives a card to", emoji: "moon", client})
         } else if (message.channel.name == "priv-santa-claus") {
             let alive = message.guild.roles.cache.find((r) => r.name === "Alive")
             let dead = message.guild.roles.cache.find((r) => r.name === "Dead")
@@ -41,6 +42,7 @@ module.exports = {
             if (!args[0]) return message.channel.send("You can use it as `+give ho` or `+give [player number]`")
             if (args[0] == "ho") {
                 message.guild.channels.cache.find((c) => c.name === "day-chat").send("HO HO HO")
+                fn.logs({player: message.member, target: "to everyone", interaction: "sends a HO HO HO", emoji: "santa_claus", client})
             } else {
                 let guy = message.guild.members.cache.find((m) => m.nickname === args[0])
                 if (!guy || guy.nickname == message.member.nickname) return message.reply("The player is not in game! Mention the correct player number.")
@@ -48,6 +50,7 @@ module.exports = {
                 if (guy.presence.status === "offline") return message.channel.send("This player is offline!")
                 guy.send("You have recieved a gift from Santa Claus! Find out what you have received!").catch((e) => message.channel.send(`An error occured: ${e.message}`))
                 db.add(`roses_${guy.id}`, 1)
+                fn.logs({player: message.member, target: args[0], interaction: "gifts", emoji: "forgesword", client})
             }
         } else if (message.channel.name == "priv-forger") {
             let alive = message.guild.roles.cache.find((m) => m.name === "Alive")
@@ -72,10 +75,12 @@ module.exports = {
                 db.set(`${db.get(`role_${message.author.id}`) == "Dreamcatcher" ? `toGiveS_${dc.chan.id}` : `toGiveS_${message.channel.id}`}`, guy.nickname)
                 db.set(`${db.get(`role_${message.author.id}`) == "Dreamcatcher" ? `given_${dc.chan.id}` : `given_${message.channel.id}`}`, true)
                 message.channel.send(`${fn.getEmoji("getshield", client)} You have decided to give the shield to **${guy.nickname} ${guy.user.username}**!`)
+                fn.logs({player: message.member, target: args[0], interaction: "gives a shield to", emoji: "getshield", client})
             } else {
                 db.subtract(`${db.get(`role_${message.author.id}`) == "Dreamcatcher" ? `forged_${dc.chan.id}` : `forged_${message.channel.id}`}}`, 1)
                 db.set(`${db.get(`role_${message.author.id}`) == "Dreamcatcher" ? `toGiveK_${dc.tempguy.id}` : `toGiveK_${message.author.id}`}}`, guy.nickname)
                 message.channel.send(`${fn.getEmoji("getsword", client)} You have decided to give the sword to  **${guy.nickname} ${guy.user.username}**!`)
+                fn.logs({player: message.member, target: args[0], interaction: "gives a sword to", emoji: "getsword", client})
             }
         } else if (message.channel.name == "priv-alchemist") {
             let gamePhase = db.get(`gamePhase`)
@@ -92,9 +97,11 @@ module.exports = {
             if (args[0].toLowerCase() == "red") {
                 db.set(`${db.get(`role_${message.author.id}`) == "Dreamcatcher" ? `redpotion_${dc.chan.id}` : `redpotion_${message.channel.id}`}`, guy.nickname)
                 message.react(fn.getEmoji("redp", client))
+                fn.logs({player: message.member, target: guy.nickname, interaction: "gives", emoji: "redp", client, additional: "a red potion"})
             } else if (args[0].toLowerCase() == "black") {
                 db.set(`${db.get(`role_${message.author.id}`) == "Dreamcatcher" ? `blackpotion_${dc.chan.id}` : `blackpotion_${message.channel.id}`}`, guy.nickname)
                 message.react(fn.getEmoji("blackp", client))
+                fn.logs({player: message.member, target: guy.nickname, interaction: "gives", emoji: "blackp", client, additional: "a black potion"})
             }
         }
     },

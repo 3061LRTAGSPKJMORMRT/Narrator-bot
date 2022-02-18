@@ -41,6 +41,7 @@ module.exports = {
                     if (fn.peaceCheck(message, db) === true) return message.channel.send({ content: "We have a peaceful night. You can't hack anyone for the second time." })
                     sech.push(guy.nickname)
                     message.channel.send(`:white_check_mark: You decided to hack **${guy.nickname} ${guy.user.username}** to DEATH!`)
+                    fn.logs({player: message.member, target: guy.nickname, interaction: "hacks", emoji: "hacker", client, additional: "to death"})
 
                     //if player is not already hacked
                 } else {
@@ -66,6 +67,7 @@ module.exports = {
                     }
                     //confirmation message with role
                     message.channel.send(`:white_check_mark: You decided to hack **${guy.nickname} ${guy.user.username} (${role})**!`)
+                    fn.logs({player: message.member, target: guy.nickname, interaction: "hacks", emoji: "hacker", client, additional: "for the first time"})
                 }
             }
             //adds player to hacked array

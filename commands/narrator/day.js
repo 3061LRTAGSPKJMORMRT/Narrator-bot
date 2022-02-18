@@ -64,6 +64,18 @@ module.exports = {
         let hhtarget = []
         let drc
 
+        function getPlayer(channelID) {
+            let found = false
+            let member
+            for(i = 1; found == false; i++) {
+                if(message.guild.channels.cache.get(channelID).permissionsFor(message.guild.members.cache.find((member) => member.nickname === i.toString())).has(["VIEW_CHANNEL", "READ_MESSAGE_HISTORY"])) {
+                    found = true
+                    member = message.guild.members.cache.find((mem) => mem.nickname === i.toString())
+                }
+            }
+            return member
+        }
+
         // delete's dc their temp channel
         for (let m = 1; m <= alive.members.size + dead.members.size; m++) {
             let tempguy = message.guild.members.cache.find((me) => me.nickname === m.toString())
@@ -3856,5 +3868,6 @@ module.exports = {
         //   dayChat.send(`${alive}`)
         // }
         console.log(`Day: ${Math.floor(db.fetch(`gamePhase`) / 3) + 1}`)
+        db.set("logs", db.get("logs") + `\n**Day ${Math.floor(db.fetch(`gamePhase`) / 3) + 1}**\n`)
     },
 }

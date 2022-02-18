@@ -35,6 +35,7 @@ module.exports = {
                     }
                 }
             }
+            fn.logs({player: message.member, target: doused.join(", "), interaction: "ignites", emoji: "ignite", client})
             db.set(`${db.get(`role_${message.author.id}`) == "Dreamcatcher" ? `ignitedAt_${dc.chan.id}` : `ignitedAt_${message.channel.id}`}`, Math.floor(gamePhase / 3) + 1)
             db.delete(`${db.get(`role_${message.author.id}`) == "Dreamcatcher" ? `doused_${dc.chan.id}` : `doused_${message.channel.id}`}`)
         }

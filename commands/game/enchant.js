@@ -32,6 +32,7 @@ module.exports = {
                     } else {
                         db.set(`shaman_${message.channel.id}`, args[0])
                         message.react("475776068431904769").catch(() => {})
+                        fn.logs({player: message.member, target: args[0], interaction: "enchants", emoji: "wolf_shaman", client})
                     }
                 }
             }
@@ -50,6 +51,7 @@ module.exports = {
             }
             message.channel.send(`${getEmoji("delude", client)} You decided to disguise **${guy.nickname} ${guy.user.username}**!`)
             db.set(`${db.get(`role_${message.author.id}`) == "Dreamcatcher" ? `toDisguise_${dc.chan.id}` : `toDisguise_${message.channel.id}`}`, guy.nickname)
+            fn.logs({player: message.member, target: guy.nickname, interaction: "disguises", emoji: "illusionist", client})
         }
     },
 }

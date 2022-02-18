@@ -26,6 +26,7 @@ module.exports = {
                 if (!guy.roles.cache.has(ids.alive) || !ownself.roles.cache.has(ids.alive)) return await message.reply("You or your target isn't alive!")
                 db.set(`${db.get(`role_${message.author.id}`) == "Dreamcatcher" ? `heal_${dc.chan.id}` : `heal_${message.channel.id}`}`, args[0])
                 message.react("475775251297337344")
+                fn.logs({player: message.member, target: guy.nickname, interaction: "saves", emoji: "heal", client, additional: ""})
             }
             ;``
         } else if (message.channel.name === "priv-witch") {
@@ -46,6 +47,7 @@ module.exports = {
                     if (!guy.roles.cache.has(ids.alive) || !ownself.roles.cache.has(ids.alive)) return await message.reply("You can play with alive people only!")
                     db.set(`${db.get(`role_${message.author.id}`) == "Dreamcatcher" ? `potion_${dc.chan.id}` : `potion_${message.channel.id}`}`, args[0])
                     message.react("596733389084819476")
+                    fn.logs({player: message.member, target: guy.nickname, interaction: "heals", emoji: "potion", client,})
                 }
             }
         } else if (message.channel.name == "priv-bodyguard") {
@@ -63,6 +65,7 @@ module.exports = {
             if (!guy.roles.cache.has(ids.alive) || !ownself.roles.cache.has(ids.alive)) return await message.reply("You or your target isn't alive!")
             db.set(`${db.get(`role_${message.author.id}`) == "Dreamcatcher" ? `guard_${dc.chan.id}` : `guard_${message.channel.id}`}`, args[0])
             message.react("475775137434697728")
+            fn.logs({player: message.member, target: guy.nickname, interaction: "protects", emoji: "guard", client,})
         } else if (message.channel.name == "priv-tough-guy") {
             let alive = message.guild.roles.cache.find((r) => r.name === "Alive")
             let gamePhase = db.get(`gamePhase`)
@@ -80,6 +83,7 @@ module.exports = {
 
             db.set(`${db.get(`role_${message.author.id}`) == "Dreamcatcher" ? `tough_${dc.chan.id}` : `tough_${message.channel.id}`}`, guy.nickname)
             message.react("606429479170080769")
+            fn.logs({player: message.member, target: guy.nickname, interaction: "protects", emoji: "tough_guy", client,})
         }
     },
 }

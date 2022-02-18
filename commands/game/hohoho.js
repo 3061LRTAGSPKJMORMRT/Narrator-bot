@@ -9,6 +9,7 @@ module.exports = {
             if (!message.member.roles.cache.has(alive.id)) return message.channel.send("You cannot use the ability now!")
 
             message.guild.channels.cache.find((c) => c.name === "day-chat").send(`${alive} HO HO HO`)
+            fn.logs({player: message.member, target: "to everyone", interaction: "sends a HO HO HO", emoji: "santa_claus", client})
         }
     },
 }

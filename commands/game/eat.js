@@ -56,6 +56,7 @@ module.exports = {
                 message.guild.members.cache.find((m) => m.user.tag === args[j])
                 message.channel.send(`${getEmoji("eat", client)} You decided to eat **${guy.nickname} ${guy.user.username}**!`)
             }
+            fn.logs({player: message.member, target: guy.nickname, interaction: "eats", emoji: "eat", client})
         }
     },
 }

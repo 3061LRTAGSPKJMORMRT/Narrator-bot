@@ -31,11 +31,13 @@ module.exports = {
                 db.subtract(`${db.get(`role_${message.author.id}`) == "Dreamcatcher" ? `forged_${dc.chan.id}` : `forged_${message.channel.id}`}`, 1)
                 db.set(`${db.get(`role_${message.author.id}`) == "Dreamcatcher" ? `given_${dc.chan.id}` : `given_${message.channel.id}`}`, false)
                 message.channel.send(`${getEmoji("forgeshield", client)} You have started to forge a shield!`)
+                fn.logs({player: message.member, target: "a shield", interaction: "forges", emoji: "forgeshield", client})
             } else if (forged == 1) {
                 db.set(`${db.get(`role_${message.author.id}`) == "Dreamcatcher" ? `forging_${dc.chan.id}` : `forging_${message.channel.id}`}`, db.get(`gamePhase`) % 3 == 0 ? true : false)
                 db.subtract(`${db.get(`role_${message.author.id}`) == "Dreamcatcher" ? `forged_${dc.chan.id}` : `forged_${message.channel.id}`}`, 1)
                 db.set(`${db.get(`role_${message.author.id}`) == "Dreamcatcher" ? `given_${dc.chan.id}` : `given_${message.channel.id}`}`, false)
                 message.channel.send(`${getEmoji("forgesword", client)} You have started forging a sword!`)
+                fn.logs({player: message.member, target: "a sword", interaction: "forges", emoji: "forgesword", client})
             } else {
                 return message.channel.send("You can no loger forge items!")
             }

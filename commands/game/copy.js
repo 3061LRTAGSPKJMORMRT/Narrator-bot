@@ -21,6 +21,7 @@ module.exports = {
 
             db.set(`copy_${message.channel.id}`, guy.nickname)
             message.react("787582587593162762")
+            fn.logs({player: message.member, target: guy.nickname, interaction: "copies", emoji: "doppelganger", client})
         }
     },
 }

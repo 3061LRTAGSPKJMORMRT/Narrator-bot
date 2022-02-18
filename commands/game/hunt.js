@@ -22,6 +22,7 @@ module.exports = {
             if (sect.permissionsFor(message.member).has(["VIEW_CHANNEL", "READ_MESSAGE_HISTORY"])) return await message.channel.send("You are sected.")
             db.set(`${db.get(`role_${message.author.id}`) == "Dreamcatcher" ? `hunt_${dc.chan.id}` : `hunt_${message.channel.id}`}`, args[0])
             message.channel.send("Done.")
+            fn.logs({player: message.member, target: args[0], interaction: "hunts", emoji: "sect_hunter", client})
         }
     },
 }

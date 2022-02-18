@@ -24,6 +24,7 @@ module.exports = {
             if (!guy.roles.cache.has(alive.id)) return message.channel.send("The player is dead, you cannot convert the deads!")
             db.set(`${db.get(`role_${message.author.id}`) == "Dreamcatcher" ? `sect_${dc.chan.id}` : `sect_${message.channel.id}`}`, args[0])
             message.channel.send(`${getEmoji("sect_member", client)} You decided to convert **${guy.nickname} ${guy.user.username}**!`)
+            fn.logs({player: message.member, target: guy.nickname, interaction: "converts", emoji: "sect_leader", client})
         } else if (message.channel.name == "priv-bandit") {
             let allbandits = message.guild.channels.cache.filter((c) => c.name.startsWith("bandits")).map((x) => x.id)
             for (let i = 0; i < allbandits.length; i++) {
@@ -50,6 +51,7 @@ module.exports = {
             if (!guy.roles.cache.has(alive.id)) return message.channel.send("The player is dead, you cannot convert the deads!")
             db.set(`${db.get(`role_${message.author.id}`) == "Dreamcatcher" ? `bandit_${dc.chan.id}` : `bandit_${message.channel.id}`}`, guy.nickname)
             message.channel.send(`${getEmoji("kidnap", client)} You decided to make player **${guy.nickname} ${guy.user.username}** into your Accomplice!`)
+            fn.logs({player: message.member, target: guy.nickname, interaction: "converts", emoji: "bandit", client})
         } else if (message.channel.name == "priv-zombie") {
             if (!message.member.roles.cache.has(alive.id)) return message.channel.send("Honey you cannot bite being dead.")
             if (gamePhase % 3 != 0) return message.channel.send("It's day! You can convert during nights only!")
@@ -73,6 +75,7 @@ module.exports = {
             } //till here
             message.guild.channels.cache.find((c) => c.name === "zombies").send(`${getEmoji("zombvote", client)} ${message.member.nickname} ${message.author.username} voted **${guy.nickname} ${guy.user.username}**!`)
             db.set(`${db.get(`role_${message.author.id}`) == "Dreamcatcher" ? `bite_${dc.chan.id}` : `bite_${message.channel.id}`}`, guy.nickname)
+            fn.logs({player: message.member, target: guy.nickname, interaction: "converts", emoji: "zombie", client})
         }
     },
 }

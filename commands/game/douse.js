@@ -65,6 +65,7 @@ module.exports = {
                 db.set(`${db.get(`role_${message.author.id}`) == "Dreamcatcher" ? `toDouse_${dc.chan.id}` : `toDouse_${message.channel.id}`}`, [args[0]])
                 message.channel.send(`${getEmoji("douse", client)} Doused **${args[0]} ${guy1.user.username}**!`)
                 db.set(`${db.get(`role_${message.author.id}`) == "Dreamcatcher" ? `dousedAt_${dc.chan.id}` : `dousedAt_${message.channel.id}`}`, db.get(`nightCount_${message.author.id}`))
+                fn.logs({player: message.member, target: guy1.nickname + " and " + guy2.nickname, interaction: "douses", emoji: "arsonist", client})
             } else {
                 return await message.channel.send("You cannot douse more than 2 players at a time!")
             }

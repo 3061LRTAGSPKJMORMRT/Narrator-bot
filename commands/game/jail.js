@@ -9,6 +9,9 @@ module.exports = {
         if (message.channel.name != "priv-jailer") return
         if (args[0] == "cancel") {
             db.set(`jail_${message.channel.id}`, null)
+            let x = db.get("logs")
+            x[x.findIndex(e => e.startsWith(`${getEmoji("jailed", client)} ${message.member.nickname} jails`))] = ""
+            db.set("logs", x)
             return message.channel.send("Okay, your action has been canceled")
         }
         let alive = message.guild.roles.cache.find((r) => r.name === "Alive")
@@ -20,5 +23,6 @@ module.exports = {
         if (!guy || message.member == guy) return message.reply("Invalid Target")
         db.set(`jail_${message.channel.id}`, guy.nickname)
         message.channel.send("You have decided to jail **" + guy.nickname + " " + guy.user.username + "**!")
+        fn.logs({player: message.member, target: args[0], interaction: "jails", emoji: "jailed", client})
     },
 }

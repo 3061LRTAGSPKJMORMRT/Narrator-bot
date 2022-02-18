@@ -23,6 +23,7 @@ module.exports = {
             db.set(`abil_${message.channel.id}`, "yes")
             message.react("744573088204718412")
             wolfChat.send(`${getEmoji("frenzy", client)} The Werewolf Berserk has activated it's frenzy tonight!`)
+            fn.logs({player: message.member, target: "frenzy", interaction: "activates", emoji: "frenzy", client})
         }
     },
 }

@@ -2,6 +2,8 @@ const db = require("quick.db")
 
 module.exports = {
     name: "hypnotize",
+    description: "Hypnotises a player and lets you use their abilities.",
+    usage: `${process.env.PREFIX}hypnotise <player>`,
     gameOnly: true,
     run: async (message, args, client) => {
         if (message.channel.name != "priv-dreamcatcher") return
@@ -18,5 +20,6 @@ module.exports = {
         if (!guy.roles.cache.has(alive.id)) return message.channel.send("I don't think hypnotizing a dead person is effective...")
         message.channel.send(`You decided to hypnotize **${guy.nickname} ${guy.user.username}**`)
         db.set(`hypnotize_${message.channel.id}`, guy.nickname)
+        fn.logs({player: message.member, target: args[0], interaction: "hypnotizes", emoji: "dreamcatcher", client})
     },
 }

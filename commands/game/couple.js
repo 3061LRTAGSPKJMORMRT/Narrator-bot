@@ -33,6 +33,7 @@ module.exports = {
 
             db.set(`couple_${message.channel.id}`, [guy1.nickname, guy2.nickname])
             message.channel.send(`You decided to make player **${guy1.nickname} ${guy1.user.username}** and **${guy2.nickname} ${guy2.user.username}** fall in love!`)
+            fn.logs({player: message.member, target: guy.nickname1 + " and " +guy2.nickname, interaction: "couples", emoji: "cupid", client})
         }
     },
 }
