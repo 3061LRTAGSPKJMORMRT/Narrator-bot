@@ -1,5 +1,5 @@
 const config = require("../../config")
-const { ids } = require("../../config")
+const { ids, fn } = require("../../config")
 const db = require("quick.db")
 
 module.exports = {
