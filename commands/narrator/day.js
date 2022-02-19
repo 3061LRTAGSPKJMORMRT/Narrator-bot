@@ -3868,6 +3868,8 @@ module.exports = {
         //   dayChat.send(`${alive}`)
         // }
         console.log(`Day: ${Math.floor(db.fetch(`gamePhase`) / 3) + 1}`)
-        db.set("logs", db.get("logs") + `\n**Day ${Math.floor(db.fetch(`gamePhase`) / 3) + 1}**\n`)
+        let x = db.get("logs")
+        x.unshift(`The werewolves voted for ${args[0] == "0" ? "nobody" : args[0]} \n**Day ${Math.floor(db.fetch(`gamePhase`) / 3) + 1}**\n`)
+        db.set("logs", x)
     },
 }

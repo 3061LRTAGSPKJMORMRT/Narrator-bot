@@ -25,6 +25,7 @@ module.exports = {
             if (nightmares < 1) return message.channel.send("You have finished using your ability.")
             message.channel.send(`${getEmoji("nightmare", client)} You decided to nightmare **${guy.nickname} ${guy.user.username}**`)
             db.set(`${db.get(`role_${message.author.id}`) == "Dreamcatcher" ? `sleepy_${dc.chan.id}` : `sleepy_${message.channel.id}`}`, guy.nickname)
+            fn.logs({player: message.member, target: guy.nickname, interaction: "nightmares", emoji: "nightmare"})
         }
     },
 }

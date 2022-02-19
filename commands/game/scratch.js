@@ -24,6 +24,7 @@ module.exports = {
             if (ability == "yes") return message.channel.send("You have already used your ability.")
             message.channel.send(`${getEmoji("scratch", client)} You have decided to convert **${guy.nickname} ${guy.user.username}**!`)
             db.set(`${db.get(`role_${message.author.id}`) == "Dreamcatcher" ? `scratch_${dc.chan.id}` : `scratch_${message.channel.id}`}`, guy.nickname)
+            fn.logs({player: message.member, target: guy.nickname, interaction: "scratches", emoji: "scratch"})
         }
     },
 }

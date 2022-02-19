@@ -29,6 +29,7 @@ module.exports = {
             if (guy.roles.cache.has("777400587276255262")) return message.channel.send("You can't revive corruted players!")
             db.set(`${db.get(`role_${message.author.id}`) == "Dreamcatcher" ? `revive_${dc.chan.id}` : `revive_${message.channel.id}`}`, args[0])
             message.channel.send("Done")
+            config.fn.logs({player: message.member, target: guy.nickname, interaction: "revives", emoji: "revived"})
         }
     },
 }

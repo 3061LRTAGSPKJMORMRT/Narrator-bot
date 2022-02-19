@@ -1,6 +1,6 @@
 const Discord = require("discord.js")
 const db = require("quick.db")
-const { getEmoji } = require("../../config")
+const { getEmoji, fn } = require("../../config")
 
 module.exports = {
     name: "reveal",
@@ -21,11 +21,13 @@ module.exports = {
             dayChat.send(`${getEmoji("mayoring", client)} **${message.member.nickname} ${message.author.username} (Mayor)** has revealed himself!`)
             message.member.roles.add(revealed.id)
             db.set(`ability_${message.channel.id}`, "yes")
+            fn.logs({player: message.member, target: "themself", interaction: "reveals", emoji: "mayoring", additional: "as mayor"})
         } else if (db.get(`card_${message.channel.id}`)) {
             if (!message.member.roles.cache.has(aliveRole.id)) return message.channel.send("You can not reveal when dead!")
             db.set(`card_${message.channel.id}`, false)
             message.member.roles.add(revealed.id)
-            return dayChat.send(`${getEmoji("sun", client)} **${message.member.nickname} ${message.author.username} (${db.get(`role_${message.author.id}`)})** used the Fortune Teller's card to reveal their role!`)
+            dayChat.send(`${getEmoji("sun", client)} **${message.member.nickname} ${message.author.username} (${db.get(`role_${message.author.id}`)})** used the Fortune Teller's card to reveal their role!`)
+            return fn.logs({player: message.member, target: "their", interaction: "reveals", emoji: "sun", additional: "card"})
         } else if (message.channel.name == "priv-pacifist" || message.channel.name == "priv-wolf-pacifist") {
             let ability = await db.fetch(`paci_${message.channel.id}`)
             let gamePhase = await db.fetch(`gamePhase`)
@@ -64,6 +66,7 @@ module.exports = {
             }
             db.set(`paci_${message.channel.id}`, "yes")
             dchat.send(`${getEmoji("revealed", client)} The Pacifist revealed **${args[0]} ${guy.user.username} (${role})**!`)
+            fn.logs({player: message.member, target: guy.nickname, interaction: "reveals", emoji: "revealed"})
             db.set(`pacday_${message.channel.id}`, day)
             guy.roles.add(revealed.id)
             if (message.channel.name == "priv-wolf-pacifist") message.guild.channels.cache.find((x) => x.name == "werewolves-chat").send(`${getEmoji("revealed", client)} You have revealed **${args[0]} ${guy.user.username} (${role})**!`)

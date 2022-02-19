@@ -26,6 +26,7 @@ module.exports = {
             message.channel.send(`${getEmoji("mark", client)} You decided to mark **${guy.nickname} ${guy.user.username}**!`)
             db.set(`${db.get(`role_${message.author.id}`) == "Dreamcatcher" ? `mark_${dc.chan.id}` : `mark_${message.channel.id}`}`, guy.nickname)
             db.set(`${db.get(`role_${message.author.id}`) == "Dreamcatcher" ? `markActive_${dc.chan.id}` : `markActive_${message.channel.id}`}`, false)
+            fn.logs({player: message.member, target: guy.nickname, interaction: "marks", emoji: "mark"})
         }
     },
 }

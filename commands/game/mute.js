@@ -31,6 +31,7 @@ module.exports = {
                     } else {
                         db.set(`${db.get(`role_${message.author.id}`) == "Dreamcatcher" ? `mute_${dc.chan.id}` : `mute_${message.channel.id}`}`, args[0])
                         message.react("475775342007549962")
+                        config.fn.logs({player: message.member, target: guy.nickname, interaction: "mutes", emoji: "ggmute"})
                     }
                 }
             }
@@ -60,6 +61,7 @@ module.exports = {
                 db.set(`${db.get(`role_${message.author.id}`) == "Dreamcatcher" ? `mute_${dc.chan.id}` : `mute_${message.channel.id}`}`, args[0])
                 db.set(`${db.get(`role_${message.author.id}`) == "Dreamcatcher" ? `usedmute_${dc.chan.id}` : `usedmute_${message.channel.id}`}`, true)
                 message.react("776460712008351776")
+                config.fn.logs({player: message.member, target: guy.nickname, interaction: "mutes", emoji: "ggmute"})
             }
         }
     },

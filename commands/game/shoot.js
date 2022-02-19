@@ -54,6 +54,7 @@ module.exports = {
                 guy.roles.remove(alive.id)
                 db.subtract(`bullets_${message.channel.id}`, 1)
                 db.set(`did_${message.channel.id}`, dayCount)
+                fn.logs({player: message.member, target: guy.nickname, interaction: "shoots", emoji: "bullet"})
             }
         } else if (message.channel.name == "priv-jailer") {
             let dead = message.guild.roles.cache.find((r) => r.name === "Dead")
@@ -87,6 +88,7 @@ module.exports = {
             jailedchat.permissionOverwrites.edit(guy.id, {
                 SEND_MESSAGES: false,
             })
+            fn.logs({player: message.member, target: guy.nickname, interaction: "executes", emoji: "bullet"})
         } else if (message.channel.name == "priv-marksman") {
             let day = message.guild.channels.cache.find((c) => c.name === "day-chat")
             let dead = message.guild.roles.cache.find((r) => r.name === "Dead")
@@ -122,10 +124,12 @@ module.exports = {
                     guy.roles.add(dead.id)
                     guy.roles.remove(alive.id)
                     day.send(`${getEmoji("arrow", client)} The Marksman shot **${guy.nickname} ${guy.user.username} (${role})**!`)
+                    fn.logs({player: message.member, target: guy.nickname, interaction: "shoots", emoji: "arrow"})
                 } else {
                     message.member.roles.add(dead.id)
                     message.member.roles.remove(alive.id)
                     day.send(`${getEmoji("arrow", client)} **${message.member.nickname} ${message.author.username} (Marksman)** tried shotting **${guy.nickname} ${guy.user.username}** but their shot backfired! **${guy.nickname} ${guy.user.username}** is a villager!`)
+                    fn.logs({player: message.member, target: guy.nickname, interaction: "tried shooting", emoji: "arrow", additional: "but died instead"})
                 }
             }
         }

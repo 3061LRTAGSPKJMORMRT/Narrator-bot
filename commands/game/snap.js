@@ -1,5 +1,5 @@
 const db = require("quick.db")
-const { getEmoji } = require("../../config")
+const { getEmoji, fn } = require("../../config")
 
 module.exports = {
     name: "snap",
@@ -30,6 +30,7 @@ module.exports = {
                 }
             }
             db.delete(`disguised_${message.channel.id}`)
+            fn.logs({player: message.member, target: disguises.join(", "), interaction: "snaps", emoji: "delusionise"})
         }
     },
 }

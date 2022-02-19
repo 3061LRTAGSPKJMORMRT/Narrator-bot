@@ -18,6 +18,7 @@ module.exports = {
             if (resigned == true) return message.channel.send("You have already used your ability!")
             db.set(`${db.get(`role_${message.author.id}`) == "Dreamcatcher" ? `resigned_${dc.chan.id}` : `resigned_${message.channel.id}`}`, true)
             message.guild.channels.cache.find((c) => c.name === "werewolves-chat").send("The Wolf Seer resigned from their ability! They can now vote with the werewolves!")
+            config.fn.logs({player: message.member, target: "", interaction: "resigns", emoji: "wolf_seer"})
         }
     },
 }

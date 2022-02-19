@@ -1,5 +1,5 @@
 const db = require("quick.db")
-const { getEmoji } = require("../../config")
+const { getEmoji, fn } = require("../../config")
 
 module.exports = {
     name: "shadow",
@@ -28,6 +28,7 @@ module.exports = {
                 .permissionOverwrites.edit(dead.id, {
                     VIEW_CHANNEL: false,
                 })
+                fn.logs({player: message.member, target: "shadow", interaction: "activates", emoji: "shadow"})
         }
     },
 }

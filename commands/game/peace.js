@@ -1,4 +1,5 @@
 const db = require("quick.db")
+const { fn } = require("../../config")
 
 module.exports = {
     name: "peace",
@@ -18,6 +19,7 @@ module.exports = {
                 dayChat.send({ content: `${alive}\nPeace be upon you dear villagers. No one can die next night!` })
                 db.set(`peace_${message.channel.id}`, nightCount + 1)
                 message.channel.send({ content: "Your message has reached the villagers." })
+                fn.logs({player: message.member, target: "peace", interaction: "activates", emoji: "prognosticator"})
             } else return message.channel.send("You can use this command in only in nights and not during the first one.")
         }
     },

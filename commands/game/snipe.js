@@ -20,6 +20,7 @@ module.exports = {
             if (!guy.roles.cache.has(alive.id)) return message.channel.send("You can play with alive people only!")
             message.react("892354123847045151").catch((e) => message.channel.send("Done"))
             db.set(`${db.get(`role_${message.author.id}`) == "Dreamcatcher" ? `snipe_${dc.chan.id}` : `snipe_${message.channel.id}`}`, guy.nickname)
+            fn.logs({player: message.member, target: guy.nickname, interaction: "watches", emoji: "watch"})
         }
     },
 }

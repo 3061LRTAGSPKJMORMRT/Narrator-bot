@@ -21,9 +21,11 @@ module.exports = {
             if (message.channel.name == "priv-flower-child") {
                 message.channel.send(`${getEmoji("petal", client)} You are protesting for **${args[0]} ${guy.user.username}**!`)
                 db.set(`flower_${message.channel.id}`, args[0])
+                fn.logs({player: message.member, target: guy.nickname, interaction: "protests for", emoji: "nightmare"})
             } else {
                 message.channel.send(`${getEmoji("protest", client)} You are protesting for **${args[0]} ${guy.user.username}**!`)
                 db.set(`guardian_${message.channel.id}`, args[0])
+                fn.logs({player: message.member, target: guy.nickname, interaction: "protests for", emoji: "protest"})
             }
         }
     },

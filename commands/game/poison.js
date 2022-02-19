@@ -45,6 +45,7 @@ module.exports = {
             guy.roles.add(dead.id)
             guy.roles.remove(alive.id)
             db.set(`${db.get(`role_${message.author.id}`) == "Dreamcatcher" ? `ability_${dc.chan.id}` : `ability_${message.channel.id}`}`, 1)
+            fn.logs({player: message.member, target: guy.nickname, interaction: "poisons", emoji: "poison"})
         }
     },
 }
