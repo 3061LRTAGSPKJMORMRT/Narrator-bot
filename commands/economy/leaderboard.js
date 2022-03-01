@@ -14,8 +14,8 @@ module.exports = {
         let errorReply = ""
 
         // extended arrays to check arguments and modify embed title
-        let sortedByOptions = ["coins", "roses", "gems", "xp"]
-        let lbTypes = ["Coin", "Rose", "Gem", "Xp"]
+        let sortedByOptions = ["coins", "roses", "gems"]
+        let lbTypes = ["Coin", "Rose", "Gem"]
 
         //checking args and changeing line 12-14
         /* args[0] is the leader board type (coins etc) */
