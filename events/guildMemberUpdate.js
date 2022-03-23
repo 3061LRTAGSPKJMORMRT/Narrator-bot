@@ -41,6 +41,11 @@ module.exports = (client) => {
                 }
             }
         }
+        
+        if (db.get(`role_${newMember.id}`) === "Kitten Wolf") {
+            newMember.guild.channels.cache.find((c) => c.name === "werewolves-chat").send(`${getEmoji("kitten_wolf", client)} The Kitten Wolf has died! If you try to kill a player the following night, they will be converted instead!`)
+            db.set(`kittenWolfConvert`, true)
+        }
 
         // mort dies
         if (db.get(`role_${newMember.id}`) == "Mortician") {
@@ -529,6 +534,8 @@ module.exports = (client) => {
                         db.delete(`sleepy_${chan.id}`)
                     } else if (role == "Naughty Boy") {
                         db.delete(`switch_${chan.id}`)
+                    } else if (role == "Flower Child" || (role == "Guardian Wolf" && parseInt(db.get(`protest_${chan.id}`)).toString() != "NaN")) {
+                        db.set(`protest_${chan.id}`, null)
                     } else if (role.toLowerCase().includes("wolf")) {
                         db.delete(`wolvesKill_${chan.id}`)
                     } else if (role == "Spirit Seer") {

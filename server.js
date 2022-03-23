@@ -3,6 +3,7 @@ require("dotenv").config()
 
 const fs = require("fs")
 const db = require("quick.db")
+const { fn, getEmoji } = require("./config")
 
 const Sentry = require("@sentry/node")
 const Tracing = require("@sentry/tracing")
@@ -148,14 +149,13 @@ client.buttonPaginator = async (authorID, msg, embeds, page, addButtons = true) 
 
     // rows
     let activeRow = new Discord.MessageActionRow().addComponents([buttonBegin, buttonBack, buttonNext, buttonEnd])
-    let deadRow = new Discord.MessageActionRow().addComponents([buttonBegin.setDisabled(), buttonBack.setDisabled(), buttonNext.setDisabled(), buttonEnd.setDisabled()])
 
     // adding buttons
     if (addButtons) msg.edit({ components: [activeRow] })
 
     // collecting interactions
     let filter = (interaction) => interaction.isButton() === true && interaction.user.id === authorID
-    let collector = msg.createMessageComponentCollector({ filter, time: 30 * 1000 })
+    let collector = msg.createMessageComponentCollector({ filter, idle: 15 * 1000 })
 
     let p = --page
 
@@ -171,6 +171,7 @@ client.buttonPaginator = async (authorID, msg, embeds, page, addButtons = true) 
         await button.update({ embeds: [embeds[p]] })
     })
     collector.on("end", () => {
+        let deadRow = new Discord.MessageActionRow().addComponents([buttonBegin.setDisabled(), buttonBack.setDisabled(), buttonNext.setDisabled(), buttonEnd.setDisabled()])
         msg.edit({ components: [deadRow] })
     })
 }
@@ -203,17 +204,43 @@ client.on("ready", async () => {
             dsn: process.env.SENTRY,
             tracesSampleRate: 1.0,
         })
-        // let privateKey = fs.readFileSync("./ghnb.pem")
-        // client.github = new Octokit({
-        //     authStrategy: createAppAuth,
-        //     auth: {
-        //         appId: 120523,
-        //         privateKey,
-        //         clientSecret: process.env.GITHUB,
-        //         installationId: 17541999,
-        //     },
-        // })
+        let privateKey = fs.readFileSync("./ghnb.pem")
+        client.github = new Octokit({
+            authStrategy: createAppAuth,
+            auth: {
+                appId: 120523,
+                privateKey,
+                clientSecret: process.env.GITHUB,
+                installationId: 17541999,
+            },
+        })
     }
+
+    setInterval(async () => {
+        let lottery = require("./schemas/lottery")
+        let lotteries = await lottery.find()
+        if (lotteries.length != 0) {
+            let lot = lotteries[0]
+            if (new Date().getTime() > lot.endDate) {
+                let chan = client.channels.cache.get("947930500725616700")
+                let logs = client.channels.cache.get("949248776500031508")
+                if (lot.participants.length == 0) {
+                    chan.send(`No one has joined this lottery, so no winner.`)
+                } else {
+                    let winner = fn.randomWeight(lot.participants)
+                    let person = client.users.cache.find((u) => u.id === winner)
+                    chan.send(`Congratulations to ${person} for winning the lottery! You have won ${lot.pot} ${getEmoji("coin", client)}, they have been added to your balance.`)
+                    let msg = await chan.messages.fetch(lot.msg)
+                    msg.edit({ components: [] })
+                    let player = await players.findOne({ user: person.id })
+                    player.coins += lot.pot
+                    logs.send(`${lot}`)
+                    player.save()
+                    lot.remove()
+                }
+            }
+        }
+    }, 2000)
 
     //Invite Tracker
     client.allInvites = await client.guilds.cache.get(config.ids.server.sim).invites.fetch()

@@ -13,7 +13,7 @@ module.exports = {
         let content = ""
         let alive = message.guild.roles.cache.find((r) => r.name === "Alive").members.size
         let dead = message.guild.roles.cache.find((r) => r.name === "Dead").members.size
-        let c = message.guild.channels.cache.filter((c) => c.name.startsWith("priv"))
+        let c = message.guild.channels.cache.filter((c) => c.name.startsWith("priv") && c.type !== "GUILD_CATEGORY")
         let ch = c.map((x) => x.id)
         for (let i = 1; i <= alive + dead; i++) {
             let guy = message.guild.members.cache.find((m) => m.nickname === i.toString())
@@ -38,7 +38,13 @@ module.exports = {
                 }
             }
         }
-        let embed = new Discord.MessageEmbed().setTitle("Playerinfo").setDescription(content).setColor("#648620")
-        message.channel.send({ embeds: [embed] }).catch((e) => message.channel.send(`An error occured: ${e.message}`))
+        if (args[0] == "raw") {
+            message.channel.send(`**Player Info**\n${content}`)
+        } else if (args[0] == "block") {
+            message.channel.send(`\`\`\`**Player Info**\n${content}\`\`\``)
+        } else {
+            let embed = new Discord.MessageEmbed({ title: "Player Info", description: content, color: "#648620" })
+            message.channel.send({ embeds: [embed] }).catch((e) => message.channel.send(`An error occured: ${e.message}`))
+        }
     },
 }

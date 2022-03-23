@@ -3,7 +3,7 @@ const config = require("../../config")
 
 module.exports = {
     name: "revive",
-    description: "Revive a dead player.",
+    description: "Revive a dead player if you are medium.",
     usage: `${process.env.PREFIX}revive <player>`,
     aliases: ["rev", "resurrect"],
     gameOnly: true,
@@ -26,7 +26,7 @@ module.exports = {
             if (gamePhase % 3 != 0) return await message.channel.send("You can use your ability only at night!")
             let role = db.get(`role_${guy.id}`)
             if (role.toLowerCase().includes("wolf") || role == "Fool" || role == "Headhunter" || role == "Sorcerer" || role == "Serial Killer" || role == "Arsonist" || role == "Bomber") return message.channel.send("You can only revive villagers.")
-            if (guy.roles.cache.has("777400587276255262")) return message.channel.send("You can't revive corruted players!")
+            if (guy.roles.cache.has(config.ids.corrupted)) return message.channel.send("You can't revive corruted players!")
             db.set(`${db.get(`role_${message.author.id}`) == "Dreamcatcher" ? `revive_${dc.chan.id}` : `revive_${message.channel.id}`}`, args[0])
             message.channel.send("Done")
         }

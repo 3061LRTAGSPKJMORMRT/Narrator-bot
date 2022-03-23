@@ -4,7 +4,7 @@ const { ids } = require("../../config")
 
 module.exports = {
     name: "gwhost",
-    description: "",
+    description: "Creates a game.",
     usage: `${process.env.PREFIX}gwhost [supervisor] <game...>`,
     narratorOnly: true,
     run: async (message, args, client) => {
@@ -24,10 +24,12 @@ module.exports = {
             .setLabel("Join Game")
             .setCustomId("gwjoin-" + args.join(" "))
         const row = new MessageActionRow().addComponents(button)
-        const embed = new MessageEmbed().setTitle("Player and Spectator List:").setDescription("** **").setColor(0x327210)
+        const embed = new MessageEmbed({ title: "Player and Spectator List:", description: "** **", color: 0x327210 })
         let m = await message.guild.channels.cache.get("606123818305585167").send({ content: `<@&606123686633799680>, we are now starting game ${args.join(" ")}. Our host will be <@${message.author.id}>!\nIf you do not wish to get future pings about the game, go to <#862712560511221791> and react with 🎮${sup ? `\n\n${sup}` : ""}`, embeds: [embed], components: [row] })
+        m.crosspost()
         db.set(`game`, m.id)
         db.set(`hoster`, message.author.id)
         db.set(`gamePhase`, -5)
+        db.set("gameCode", args.join(" "))
     },
 }

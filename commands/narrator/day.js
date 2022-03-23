@@ -63,6 +63,10 @@ module.exports = {
         let thekiller = []
         let hhtarget = []
         let drc
+        let currentAliveRoles = db
+            .all()
+            .filter((data) => data.ID.startsWith("role_") && message.guild.members.cache.get(data.ID.split("_")[1])?.roles.cache.has(alive.id))
+            .map((data) => [data.ID.split("_")[1], db.get(data.ID)])
 
         // delete's dc their temp channel
         for (let m = 1; m <= alive.members.size + dead.members.size; m++) {
@@ -88,6 +92,7 @@ module.exports = {
             let guy = message.guild.members.cache.find((m) => m.nickname === x.toString())
             if (guy) {
                 if (guy.roles.cache.has(alive.id)) {
+                    dayChat.permissionOverwrites.delete(guy.id, "Removed all overwrites to start the day.")
                     let role = db.get(`role_${guy.id}`)
                     let allchans = message.guild.channels.cache.filter((c) => c.name === `priv-${role.toLowerCase().replace(" ", "-")}`)
                     allchans.forEach((chan) => {
@@ -254,6 +259,7 @@ module.exports = {
                                             let channe = message.guild.channels.cache.get(witch[k])
                                             channe.send(`${getEmoji("potion", client)} Your potion saved **${guy.nickname} ${guy.user.username}**!`)
                                             channe.send(`${alive}`)
+                                            db.set(`witchAbil_${witch[k]}`, 1)
                                             players[a] = null
                                             k = 99
                                         }
@@ -430,6 +436,7 @@ module.exports = {
                                     tempchan.send(`${getEmoji("guard", client)} Player **${guy.nickname} ${guy.user.username}** could not be killed!`)
                                     tempchan.send(`${alive}`)
                                     secondhack[j] = "0"
+                                    db.set(`witchAbil_${witch[k]}`, 1)
                                 }
                             }
                         }
@@ -474,7 +481,7 @@ module.exports = {
                                                 secondhack[j] = "0"
                                                 player.roles.add(dead.id)
                                                 player.roles.remove(alive.id)
-                                                dayChat.send(`${getEmoji("normal_gravestone", client)} The Hacker hacked **${player.nickname} ${player.user.username} (Bodyguard)**!`)
+                                                dayChat.send(`${getEmoji("hack", client)} The Hacker hacked **${player.nickname} ${player.user.username} (Bodyguard)**!`)
                                                 killedplayers.push(player.id)
                                                 thekiller.push(theHacker.id)
                                             }
@@ -572,7 +579,7 @@ module.exports = {
                         // killing players
                         if (secondhack[j] != "0") {
                             if (db.get(`hypnotized_${drc}`) != theHacker.nickname) {
-                                dayChat.send(`${getEmoji("eat", client)} The Hacker hacked **${guy.nickname} ${guy.user.username} (${role})**!`)
+                                dayChat.send(`${getEmoji("hack", client)} The Hacker hacked **${guy.nickname} ${guy.user.username} (${role})**!`)
                             } else {
                                 dayChat.send(`${getEmoji("eat", client)} The Dreamcatcher compelled the Hacker to hack **${guy.nickname} ${guy.user.username} (${role})**`)
                             }
@@ -672,6 +679,7 @@ module.exports = {
                                 if (potion == eat[j]) {
                                     let channe = message.guild.channels.cache.get(witch[k])
                                     channe.send(`${getEmoji("potion", client)} Your potion saved **${guy.nickname} ${guy.user.username}**!`)
+                                    db.set(`witchAbil_${witch[k]}`, 1)
                                     channe.send(`${alive}`)
                                     cannibal.send(`${getEmoji("guard", client)} Player **${guy.nickname} ${guy.user.username}** could not be killed!`)
                                     cannibal.send(`${alive}`)
@@ -1482,23 +1490,86 @@ module.exports = {
                 }
             }
 
-            if (kills[0] != "0") {
-                wwKill = "0"
-                dayChat.send(`${getEmoji("werewolf", client)} The Werewolves killed **${guy.nickname} ${guy.user.username} (${role})**!`)
-                if (role == "Cupid") {
-                    cupidKilled = true
+            if (db.get(`kittenWolfConvert`) === true) {
+                let beforerole = db.get(`role_${guy.id}`)
+                let allChanRole = message.guild.channels.cache.filter((c) => c.name === `priv-${beforerole.toLowerCase().replace(/\s/g, "-")}`)
+                allChanRole.forEach((roleChan) => {
+                    if (roleChan.permissionsFor(guy.id).has("VIEW_CHANNEL")) {
+                        roleChan.permissionOverwrites.edit(guy.id, {
+                            VIEW_CHANNEL: false,
+                            SEND_MESSAGES: false,
+                            READ_MESSAGE_HISTORY: false,
+                        })
+                    }
+                })
+                db.set(`role_${guy.id}`, "Werewolf")
+                wwChat.send(`${getEmoji("werewolf", client)} Player **${guy.nickname} ${guy.user.username}** has been converted into a werewolf!`)
+                wwChat.permissionOverwrites.create(guy.id, {
+                    VIEW_CHANNEL: true,
+                    SEND_MESSAGES: false,
+                    READ_MESSAGE_HISTORY: true,
+                })
+                message.guild.channels.cache
+                    .find((c) => c.name === "ww-vote")
+                    .permissionOverwrites.create(guy.id, {
+                        SEND_MESSAGES: false,
+                        VIEW_CHANNEL: true,
+                        READ_MESSAGE_HISTORY: true,
+                    })
+                message.guild.channels
+                    .create("priv-werewolf", {
+                        parent: "892046231516368906",
+                    })
+                    .then(async (newWwChan) => {
+                        newWwChan.permissionOverwrites.create(guy.id, {
+                            SEND_MESSAGES: true,
+                            VIEW_CHANNEL: true,
+                            READ_MESSAGE_HISTORY: true,
+                        })
+                        newWwChan.permissionOverwrites.create(message.guild.id, {
+                            VIEW_CHANNEL: false,
+                        })
+                        newWwChan.permissionOverwrites.create(narrator.id, {
+                            SEND_MESSAGES: true,
+                            VIEW_CHANNEL: true,
+                            READ_MESSAGE_HISTORY: true,
+                            MANAGE_CHANNELS: true,
+                            MENTION_EVERYONE: true,
+                            ATTACH_FILES: true,
+                        })
+                        newWwChan.permissionOverwrites.create(narrator.id, {
+                            SEND_MESSAGES: true,
+                            VIEW_CHANNEL: true,
+                            READ_MESSAGE_HISTORY: true,
+                            MANAGE_CHANNELS: true,
+                            MENTION_EVERYONE: true,
+                            ATTACH_FILES: true,
+                        })
+                        await newWwChan.send(getRole("werewolf").description)
+                        await newWwChan.send("You have been bitten! You are a werewolf now!")
+                        kills[0] = "0"
+                    })
+            } else {
+                if (kills[0] != "0" && db.get(`kittenWolfConvert`) !== true) {
+                    wwKill = "0"
+                    dayChat.send(`${getEmoji("werewolf", client)} The Werewolves killed **${guy.nickname} ${guy.user.username} (${role})**!`)
+                    if (role == "Cupid") {
+                        cupidKilled = true
+                    }
+                    guy.roles.add(dead.id)
+                    guy.roles.remove(alive.id)
+                    killedplayers.push(guy.id)
+                    thekiller.push("Werewolf")
                 }
-                guy.roles.add(dead.id)
-                guy.roles.remove(alive.id)
-                killedplayers.push(guy.id)
-                thekiller.push("Werewolf")
-            }
-            for (let a = 1; a < kills.length; a++) {
-                dayChat.send(`${getEmoji("frenzy", client)} The Werewolf frenzy killed **${kills[a].nickname} ${kills[a].user.username} (${db.get(`role_${kills[a].id}`)})**!`)
-                kills[a].roles.add(dead.id)
-                kills[a].roles.remove(alive.id)
-                killedplayers.push(kills[a].id)
-                thekiller.push("Werewolf")
+                if (db.get(`kittenWolfConvert`) !== true) {
+                    for (let a = 1; a < kills.length; a++) {
+                        dayChat.send(`${getEmoji("frenzy", client)} The Werewolf frenzy killed **${kills[a].nickname} ${kills[a].user.username} (${db.get(`role_${kills[a].id}`)})**!`)
+                        kills[a].roles.add(dead.id)
+                        kills[a].roles.remove(alive.id)
+                        killedplayers.push(kills[a].id)
+                        thekiller.push("Werewolf")
+                    }
+                }
             }
         }
         if (wwKill != "0" && frenzy == false) {
@@ -1560,6 +1631,7 @@ module.exports = {
                             shush.roles.remove(alive.id)
                             killedplayers.push(shush.id)
                             thekiller.push(THEBH.id)
+                            l = 99999
                         }
                     }
                 }
@@ -1816,6 +1888,62 @@ module.exports = {
                 }
             }
 
+            // if kitten wolf convert exists
+
+            if (db.get(`kittenWolfConvert`) === true) {
+                let beforeRole = db.get(`role_${guy.id}`)
+                let allChanRole = message.guild.channels.cache.filter((c) => c.name === `priv-${beforeRole.toLowerCase().replace(/\s/g, "-")}`)
+                allChanRole.forEach((roleChan) => {
+                    if (roleChan.permissionsFor(guy.id).has("VIEW_CHANNEL")) {
+                        roleChan.permissionOverwrites.edit(guy.id, {
+                            VIEW_CHANNEL: false,
+                            SEND_MESSAGES: false,
+                            READ_MESSAGE_HISTORY: false,
+                        })
+                    }
+                })
+                db.set(`role_${guy.id}`, "Werewolf")
+                wwChat.send(`${getEmoji("werewolf", client)} Player **${guy.nickname} ${guy.user.username}** has been converted into a werewolf!`)
+                wwChat.permissionOverwrites.edit(guy.id, {
+                    VIEW_CHANNEL: true,
+                    SEND_MESSAGES: false,
+                    READ_MESSAGE_HISTORY: true,
+                })
+                message.guild.channels
+                    .create("priv-werewolf", {
+                        parent: "892046231516368906",
+                    })
+                    .then(async (newWwChan) => {
+                        newWwChan.permissionOverwrites.create(guy.id, {
+                            SEND_MESSAGES: true,
+                            VIEW_CHANNEL: true,
+                            READ_MESSAGE_HISTORY: true,
+                        })
+                        newWwChan.permissionOverwrites.create(message.guild.id, {
+                            VIEW_CHANNEL: false,
+                        })
+                        newWwChan.permissionOverwrites.create(narrator.id, {
+                            SEND_MESSAGES: true,
+                            VIEW_CHANNEL: true,
+                            READ_MESSAGE_HISTORY: true,
+                            MANAGE_CHANNELS: true,
+                            MENTION_EVERYONE: true,
+                            ATTACH_FILES: true,
+                        })
+                        newWwChan.permissionOverwrites.create(mininarr.id, {
+                            SEND_MESSAGES: true,
+                            VIEW_CHANNEL: true,
+                            READ_MESSAGE_HISTORY: true,
+                            MANAGE_CHANNELS: true,
+                            MENTION_EVERYONE: true,
+                            ATTACH_FILES: true,
+                        })
+                        await newWwChan.send(getRole("werewolf").description)
+                        await newWwChan.send("You have been bitten! You are a werewolf now!")
+                        wwKill = "0"
+                    })
+            }
+
             // killing the player
             if (wwKill != "0") {
                 console.log("It is not 0 (8)")
@@ -1885,6 +2013,7 @@ module.exports = {
             }
         }
         //console.log("Ok so the ww kill is passed")
+        db.delete(`kittenWolfConvert`)
 
         // red lady visting
         for (let i = 0; i < rl.length; i++) {
@@ -2340,7 +2469,7 @@ module.exports = {
                                     let potion = db.get(`potion_${witch[b]}`)
                                     if (potion == glitch) {
                                         db.set(`potion_${witch[b]}`, null)
-                                        db.set(`witchAbil_${witch[b]}`, "yes")
+                                        db.set(`witchAbil_${witch[j]}`, 1)
                                         let chan = message.guild.channels.cache.get(witch[b])
                                         chan.send(`${getEmoji("potion", client)} Your potion saved **${corrupted.nickname} ${corrupted.user.username}**!`)
                                         chan.send(`${alive}`)
@@ -2518,223 +2647,225 @@ module.exports = {
             let chan = message.guild.channels.cache.get(alchemist[a])
             let redpotion = db.get(`redpotion_${chan.id}`)
             let blackpotion = db.get(`blackpotion_${chan.id}`)
+            let theAlchemist = message.guild.members.cache.find((m) => m.roles.cache.has(alive.id) && chan.permissionsFor(m.id).has(["VIEW_CHANNEL", "READ_MESSAGE_HISTORY"]))
+            if (theAlchemist) {
+                if (redpotion) {
+                    let guy = message.guild.members.cache.find((m) => m.nickname === redpotion)
+                    if (guy) {
+                        if (guy.roles.cache.has(alive.id)) {
+                            let alrole = db.get(`role_${guy.id}`)
+                            let allch = message.guild.channels.cache.filter((c) => c.name === `priv-${alrole.toLowerCase().replace(/\s/g, "-")}`)
 
-            if (redpotion) {
-                let guy = message.guild.members.cache.find((m) => m.nickname === redpotion)
-                if (guy) {
-                    if (guy.roles.cache.has(alive.id)) {
-                        let alrole = db.get(`role_${guy.id}`)
-                        let allch = message.guild.channels.cache.filter((c) => c.name === `priv-${alrole.toLowerCase().replace(" ", "-")}`)
-
-                        allch.forEach((lol) => {
-                            if (lol.permissionsFor(guy).has(["VIEW_CHANNEL", "READ_MESSAGE_HISTORY"])) {
-                                lol.send(`${getEmoji("redp", client)} The Alchemist has sent you a potion. Sadly, you cannot make out the colour... you might die at the end of the day.`)
-                                lol.send(`${alive}`)
-                            }
-                        })
+                            allch.forEach((lol) => {
+                                if (lol.permissionsFor(guy).has(["VIEW_CHANNEL", "READ_MESSAGE_HISTORY"])) {
+                                    lol.send(`${getEmoji("redp", client)} The Alchemist has sent you a potion. Sadly, you cannot make out the colour... you might die at the end of the day.`)
+                                    lol.send(`${alive}`)
+                                }
+                            })
+                        }
                     }
                 }
-            }
 
-            if (blackpotion) {
-                let guy = message.guild.members.cache.find((m) => m.nickname === blackpotion)
-                if (guy) {
-                    if (guy.roles.cache.has(alive.id)) {
-                        let alrole = db.get(`role_${guy.id}`)
-                        let allch = message.guild.channels.cache.filter((c) => c.name === `priv-${alrole.toLowerCase().replace(" ", "-")}`)
-                        allch.forEach((lol) => {
-                            if (lol.permissionsFor(guy).has(["VIEW_CHANNEL", "SEND_MESSAGES"])) {
-                                // beast hunter
-                                for (let b = 0; b < bh.length; b++) {
-                                    let bchan = message.guild.channels.cache.get(bh[b])
-                                    let trap = db.get(`setTrap_${bchan.id}`)
-                                    let active = db.get(`trapActive_${bchan.id}`)
-                                    if (trap == blackpotion && active == true) {
-                                        bchan.send(`${getEmoji("trap", client)} Your trap was triggered last night but your target was too strong.`)
-                                        bchan.send(`${alive}`)
-                                        chan.send(`${getEmoji("guard", client)} **${guy.nickname} ${guy.user.username} could not be poisoned this night!`)
-                                        chan.send(`${alive}`)
-                                        blackpotion = "0"
-                                        db.delete(`blackpotion_${chan.id}`)
-                                        db.set(`setTrap_${bchan.id}`, null)
-                                        db.set(`setTrap_${bchan.id}`, false)
-                                    }
-                                }
-
-                                // doctor
-                                if (blackpotion != "0") {
-                                    for (let b = 0; b < doc.length; b++) {
-                                        let bchan = message.guild.channels.cache.get(doc[b])
-                                        if (db.get(`heal_${bchan.id}`) == blackpotion) {
-                                            bchan.send(`${getEmoji("heal", client)} Your protection saved **${guy.nickname} ${guy.user.username}**!`)
-                                            bchan.send(`${alive}`)
-                                            chan.send(`${getEmoji("guard", client)} **${guy.nickname} ${guy.user.username} could not be poisoned this night!`)
-                                            chan.send(`${alive}`)
-                                            db.delete(`blackpotion_${chan.id}`)
-                                            blackpotion = "0"
-                                        }
-                                    }
-                                }
-
-                                // witch
-                                if (blackpotion != "0") {
-                                    for (let b = 0; b < witch.length; b++) {
-                                        let bchan = message.guild.channels.cache.get(witch[b])
-                                        if (db.get(`potion_${bchan.id}`) == blackpotion) {
-                                            bchan.send(`${getEmoji("potion", client)} Your potion saved **${guy.nickname} ${guy.user.username}**!`)
+                if (blackpotion) {
+                    let guy = message.guild.members.cache.find((m) => m.nickname === blackpotion)
+                    if (guy) {
+                        if (guy.roles.cache.has(alive.id)) {
+                            let alrole = db.get(`role_${guy.id}`)
+                            let allch = message.guild.channels.cache.filter((c) => c.name === `priv-${alrole.toLowerCase().replace(" ", "-")}`)
+                            allch.forEach((lol) => {
+                                if (lol.permissionsFor(guy).has(["VIEW_CHANNEL", "SEND_MESSAGES"])) {
+                                    // beast hunter
+                                    for (let b = 0; b < bh.length; b++) {
+                                        let bchan = message.guild.channels.cache.get(bh[b])
+                                        let trap = db.get(`setTrap_${bchan.id}`)
+                                        let active = db.get(`trapActive_${bchan.id}`)
+                                        if (trap == blackpotion && active == true) {
+                                            bchan.send(`${getEmoji("trap", client)} Your trap was triggered last night but your target was too strong.`)
                                             bchan.send(`${alive}`)
                                             chan.send(`${getEmoji("guard", client)} **${guy.nickname} ${guy.user.username} could not be poisoned this night!`)
                                             chan.send(`${alive}`)
                                             blackpotion = "0"
                                             db.delete(`blackpotion_${chan.id}`)
-                                            db.set(`potion_${bchan.id}`, null)
-                                            db.set(`witchAbil_${bchan.id}`, 1)
+                                            db.set(`setTrap_${bchan.id}`, null)
+                                            db.set(`setTrap_${bchan.id}`, false)
                                         }
                                     }
-                                }
 
-                                // forger
-                                if (blackpotion != "0") {
-                                    let rpiu = message.guild.channels.cache.filter((c) => c.name === `priv-${alrole.toLowerCase().replace(" ", "-")}`)
-                                    rpiu.forEach((bchan) => {
-                                        if (bchan.permissionsFor(guy).has(["VIEW_CHANNEL", "READ_MESSAGE_HISTORY"])) {
-                                            if (db.get(`shield_${bchan.id}`) == true) {
-                                                bchan.send(`${getEmoji("potion", client)} Your shield saved your life!`)
+                                    // doctor
+                                    if (blackpotion != "0") {
+                                        for (let b = 0; b < doc.length; b++) {
+                                            let bchan = message.guild.channels.cache.get(doc[b])
+                                            if (db.get(`heal_${bchan.id}`) == blackpotion) {
+                                                bchan.send(`${getEmoji("heal", client)} Your protection saved **${guy.nickname} ${guy.user.username}**!`)
+                                                bchan.send(`${alive}`)
+                                                chan.send(`${getEmoji("guard", client)} **${guy.nickname} ${guy.user.username} could not be poisoned this night!`)
+                                                chan.send(`${alive}`)
+                                                db.delete(`blackpotion_${chan.id}`)
+                                                blackpotion = "0"
+                                            }
+                                        }
+                                    }
+
+                                    // witch
+                                    if (blackpotion != "0") {
+                                        for (let b = 0; b < witch.length; b++) {
+                                            let bchan = message.guild.channels.cache.get(witch[b])
+                                            if (db.get(`potion_${bchan.id}`) == blackpotion) {
+                                                bchan.send(`${getEmoji("potion", client)} Your potion saved **${guy.nickname} ${guy.user.username}**!`)
                                                 bchan.send(`${alive}`)
                                                 chan.send(`${getEmoji("guard", client)} **${guy.nickname} ${guy.user.username} could not be poisoned this night!`)
                                                 chan.send(`${alive}`)
                                                 blackpotion = "0"
                                                 db.delete(`blackpotion_${chan.id}`)
-                                                db.set(`shield_${bchan.id}`, null)
+                                                db.set(`potion_${bchan.id}`, null)
+                                                db.set(`witchAbil_${bchan.id}`, 1)
                                             }
                                         }
-                                    })
-                                }
+                                    }
 
-                                // bg
-                                if (blackpotion != "0") {
-                                    for (let b = 0; b < bg.length; b++) {
-                                        let bchan = message.guild.channels.cache.get(bg[b])
-                                        let lives = db.get(`lives_${bchan.id}`)
-                                        let guard = db.get(`guard_${bchan.id}`)
-                                        if (guard == blackpotion || alrole == "Bodyguard") {
-                                            if (alrole == "Bodyguard") {
-                                                if (lives == 2) {
-                                                    if (bchan.permissionsFor(guy).has(["VIEW_CHANNEL", "READ_MESSAGE_HISTORY"])) {
-                                                        bchan.send(`${getEmoji("guard", client)} You fought off an attack last night and survived. Next time you are attacked you will die.`)
+                                    // forger
+                                    if (blackpotion != "0") {
+                                        let rpiu = message.guild.channels.cache.filter((c) => c.name === `priv-${alrole.toLowerCase().replace(" ", "-")}`)
+                                        rpiu.forEach((bchan) => {
+                                            if (bchan.permissionsFor(guy).has(["VIEW_CHANNEL", "READ_MESSAGE_HISTORY"])) {
+                                                if (db.get(`shield_${bchan.id}`) == true) {
+                                                    bchan.send(`${getEmoji("potion", client)} Your shield saved your life!`)
+                                                    bchan.send(`${alive}`)
+                                                    chan.send(`${getEmoji("guard", client)} **${guy.nickname} ${guy.user.username} could not be poisoned this night!`)
+                                                    chan.send(`${alive}`)
+                                                    blackpotion = "0"
+                                                    db.delete(`blackpotion_${chan.id}`)
+                                                    db.set(`shield_${bchan.id}`, null)
+                                                }
+                                            }
+                                        })
+                                    }
+
+                                    // bg
+                                    if (blackpotion != "0") {
+                                        for (let b = 0; b < bg.length; b++) {
+                                            let bchan = message.guild.channels.cache.get(bg[b])
+                                            let lives = db.get(`lives_${bchan.id}`)
+                                            let guard = db.get(`guard_${bchan.id}`)
+                                            if (guard == blackpotion || alrole == "Bodyguard") {
+                                                if (alrole == "Bodyguard") {
+                                                    if (lives == 2) {
+                                                        if (bchan.permissionsFor(guy).has(["VIEW_CHANNEL", "READ_MESSAGE_HISTORY"])) {
+                                                            bchan.send(`${getEmoji("guard", client)} You fought off an attack last night and survived. Next time you are attacked you will die.`)
+                                                            bchan.send(`${alive}`)
+                                                            chan.send(`${getEmoji("guard", client)} **${guy.nickname} ${guy.user.username} could not be poisoned this night!`)
+                                                            chan.send(`${alive}`)
+                                                            blackpotion = "0"
+                                                            db.delete(`blackpotion_${chan.id}`)
+                                                            db.set(`lives_${bchan.id}`, 1)
+                                                        }
+                                                    }
+                                                } else if (guard == blackpotion) {
+                                                    if (lives == 2) {
+                                                        bchan.send(`${getEmoji("potion", client)} You fought off an attack last night and survived. Next time you are attacked you will die.`)
                                                         bchan.send(`${alive}`)
                                                         chan.send(`${getEmoji("guard", client)} **${guy.nickname} ${guy.user.username} could not be poisoned this night!`)
                                                         chan.send(`${alive}`)
                                                         blackpotion = "0"
                                                         db.delete(`blackpotion_${chan.id}`)
                                                         db.set(`lives_${bchan.id}`, 1)
+                                                    } else if (lives == 1) {
+                                                        for (let c = 1; c < 17; c++) {
+                                                            let alchd = message.guild.members.cache.find((m) => m.nickname === c.toString())
+                                                            if (alchd) {
+                                                                if (alchd.roles.cache.has(alive.id)) {
+                                                                    if (bchan.permissionsFor(alchd).has(["VIEW_CHANNEL", "READ_MESSAGE_HISTORY"])) {
+                                                                        blackpotion = alchd.nickname
+                                                                        guy = alchd
+                                                                        lol = bchan
+                                                                        db.set(`blackpotion_${chan.id}`, alchd.nickname)
+                                                                    }
+                                                                }
+                                                            }
+                                                        }
                                                     }
                                                 }
-                                            } else if (guard == blackpotion) {
-                                                if (lives == 2) {
-                                                    bchan.send(`${getEmoji("potion", client)} You fought off an attack last night and survived. Next time you are attacked you will die.`)
-                                                    bchan.send(`${alive}`)
-                                                    chan.send(`${getEmoji("guard", client)} **${guy.nickname} ${guy.user.username} could not be poisoned this night!`)
-                                                    chan.send(`${alive}`)
+                                            }
+                                        }
+                                    }
+
+                                    // tg
+                                    if (blackpotion != "0") {
+                                        for (let b = 0; b < tg.length; b++) {
+                                            let bchan = message.guild.channels.cache.get(tg[b])
+                                            let guard = db.get(`tough_${tg[b]}`)
+                                            if (guard == blackpotion || alrole == "Tough Guy") {
+                                                if (alrole == "Tough Guy") {
                                                     blackpotion = "0"
                                                     db.delete(`blackpotion_${chan.id}`)
-                                                    db.set(`lives_${bchan.id}`, 1)
-                                                } else if (lives == 1) {
-                                                    for (let c = 1; c < 17; c++) {
-                                                        let alchd = message.guild.members.cache.find((m) => m.nickname === c.toString())
-                                                        if (alchd) {
-                                                            if (alchd.roles.cache.has(alive.id)) {
-                                                                if (bchan.permissionsFor(alchd).has(["VIEW_CHANNEL", "READ_MESSAGE_HISTORY"])) {
-                                                                    blackpotion = alchd.nickname
-                                                                    guy = alchd
-                                                                    lol = bchan
-                                                                    db.set(`blackpotion_${chan.id}`, alchd.nickname)
+                                                    if (bchan.permissionsFor(guy).has(["VIEW_CHANNEL", "READ_MESSAGE_HISTORY"])) {
+                                                        for (let c = 1; c < 17; c++) {
+                                                            let theal = message.guild.members.cache.find((m) => m.nickname === c.toString())
+                                                            if (theal) {
+                                                                if (theal.roles.cache.has(alive.id)) {
+                                                                    if (chan.permissionsFor(theal).has(["VIEW_CHANNEL", "READ_MESSAGE_HISTORY"])) {
+                                                                        bchan.send(`You were attacked by **${theal.nickname} ${theal.user.username} (Alchemist)**! You will die at the end of the day!`)
+                                                                        bchan.send(`${alive}`)
+                                                                        chan.send(`${getEmoji("guard", client)} **${guy.nickname} ${guy.user.username}** could not be poisoned this night!`)
+                                                                        chan.send(`_ _\n\n${getEmoji("tough_guy", client)} Player **${guy.nickname} ${guy.user.username}** is a **Tough Guy**. He know knows your role!`)
+                                                                        chan.send(`${alive}`)
+                                                                        db.set(`wounded_${bchan.id}`, true)
+                                                                    }
                                                                 }
                                                             }
                                                         }
+                                                    }
+                                                } else if (guard == blackpotion) {
+                                                    blackpotion = "0"
+                                                    db.delete(`blackpotion_${chan.id}`)
+                                                    let theal
+                                                    let thetg
+                                                    for (let c = 1; c < 17; c++) {
+                                                        let maybeal = message.guild.members.cache.find((m) => m.nickname === c.toString())
+                                                        if (maybeal) {
+                                                            if (maybeal.roles.cache.has(alive.id)) {
+                                                                if (bchan.permissionsFor(maybeal).has(["VIEW_CHANNEL", "READ_MESSAGE_HISTORY"])) {
+                                                                    thetg = maybeal
+                                                                } else if (chan.permissionsFor(maybeal).has(["VIEW_CHANNEL", "READ_MESSAGE_HISTORY"])) {
+                                                                    theal = maybeal
+                                                                }
+                                                            }
+                                                        }
+                                                    }
+                                                    if (theal && thetg) {
+                                                        bchan.send(`You were protecting **${guy.nickname} ${guy.user.username}** who was attacked by **${theal.nickname} ${theal.user.username} (Alchemist)**! You will die at the end of the day!`)
+                                                        bchan.send(`${alive}`)
+                                                        chan.send(`${getEmoji("guard", client)} **${guy.nickname} ${guy.user.username}** could not be poisoned this night!`)
+                                                        chan.send(`_ _\n\n${getEmoji("tough_guy", client)} Player **${thetg.nickname} ${thetg.user.username}** is a **Tough Guy**. He know knows your role!`)
+                                                        chan.send(`${alive}`)
+                                                        db.set(`wounded_${bchan.id}`, true)
                                                     }
                                                 }
                                             }
                                         }
                                     }
-                                }
 
-                                // tg
-                                if (blackpotion != "0") {
-                                    for (let b = 0; b < tg.length; b++) {
-                                        let bchan = message.guild.channels.cache.get(tg[b])
-                                        let guard = db.get(`tough_${tg[b]}`)
-                                        if (guard == blackpotion || alrole == "Tough Guy") {
-                                            if (alrole == "Tough Guy") {
-                                                blackpotion = "0"
-                                                db.delete(`blackpotion_${chan.id}`)
-                                                if (bchan.permissionsFor(guy).has(["VIEW_CHANNEL", "READ_MESSAGE_HISTORY"])) {
-                                                    for (let c = 1; c < 17; c++) {
-                                                        let theal = message.guild.members.cache.find((m) => m.nickname === c.toString())
-                                                        if (theal) {
-                                                            if (theal.roles.cache.has(alive.id)) {
-                                                                if (chan.permissionsFor(theal).has(["VIEW_CHANNEL", "READ_MESSAGE_HISTORY"])) {
-                                                                    bchan.send(`You were attacked by **${theal.nickname} ${theal.user.username} (Alchemist)**! You will die at the end of the day!`)
-                                                                    bchan.send(`${alive}`)
-                                                                    chan.send(`${getEmoji("guard", client)} **${guy.nickname} ${guy.user.username}** could not be poisoned this night!`)
-                                                                    chan.send(`_ _\n\n${getEmoji("tough_guy", client)} Player **${guy.nickname} ${guy.user.username}** is a **Tough Guy**. He know knows your role!`)
-                                                                    chan.send(`${alive}`)
-                                                                    db.set(`wounded_${bchan.id}`, true)
-                                                                }
-                                                            }
-                                                        }
-                                                    }
-                                                }
-                                            } else if (guard == blackpotion) {
-                                                blackpotion = "0"
-                                                db.delete(`blackpotion_${chan.id}`)
-                                                let theal
-                                                let thetg
-                                                for (let c = 1; c < 17; c++) {
-                                                    let maybeal = message.guild.members.cache.find((m) => m.nickname === c.toString())
-                                                    if (maybeal) {
-                                                        if (maybeal.roles.cache.has(alive.id)) {
-                                                            if (bchan.permissionsFor(maybeal).has(["VIEW_CHANNEL", "READ_MESSAGE_HISTORY"])) {
-                                                                thetg = maybeal
-                                                            } else if (chan.permissionsFor(maybeal).has(["VIEW_CHANNEL", "READ_MESSAGE_HISTORY"])) {
-                                                                theal = maybeal
-                                                            }
-                                                        }
-                                                    }
-                                                }
-                                                if (theal && thetg) {
-                                                    bchan.send(`You were protecting **${guy.nickname} ${guy.user.username}** who was attacked by **${theal.nickname} ${theal.user.username} (Alchemist)**! You will die at the end of the day!`)
-                                                    bchan.send(`${alive}`)
-                                                    chan.send(`${getEmoji("guard", client)} **${guy.nickname} ${guy.user.username}** could not be poisoned this night!`)
-                                                    chan.send(`_ _\n\n${getEmoji("tough_guy", client)} Player **${thetg.nickname} ${thetg.user.username}** is a **Tough Guy**. He know knows your role!`)
-                                                    chan.send(`${alive}`)
-                                                    db.set(`wounded_${bchan.id}`, true)
-                                                }
+                                    // rl
+                                    if (blackpotion != "0") {
+                                        for (let b = 0; b < rl.length; b++) {
+                                            let bchan = message.guild.channels.cache.get(rl[b])
+                                            if (db.get(`visit_${bchan.id}`)) {
+                                                chan.send(`${getEmoji("guard", client)} **${guy.nickname} ${guy.user.username} could not be poisoned this night!`)
+                                                chan.send(`${alive}`)
+                                                bchan.send(`${getEmoji("visit", client)} Someone tried to attack you while you were away!`)
+                                                bchan.send(`${alive}`)
                                             }
                                         }
                                     }
-                                }
 
-                                // rl
-                                if (blackpotion != "0") {
-                                    for (let b = 0; b < rl.length; b++) {
-                                        let bchan = message.guild.channels.cache.get(rl[b])
-                                        if (db.get(`visit_${bchan.id}`)) {
-                                            chan.send(`${getEmoji("guard", client)} **${guy.nickname} ${guy.user.username} could not be poisoned this night!`)
-                                            chan.send(`${alive}`)
-                                            bchan.send(`${getEmoji("visit", client)} Someone tried to attack you while you were away!`)
-                                            bchan.send(`${alive}`)
-                                        }
+                                    // killing
+                                    if (blackpotion != "0") {
+                                        lol.send(`${getEmoji("redp", client)} The Alchemist has sent you a potion. Sadly, you cannot make out the colour... you might die at the end of the day.`)
+                                        lol.send(`${alive}`)
                                     }
                                 }
-
-                                // killing
-                                if (blackpotion != "0") {
-                                    lol.send(`${getEmoji("redp", client)} The Alchemist has sent you a potion. Sadly, you cannot make out the colour... you might die at the end of the day.`)
-                                    lol.send(`${alive}`)
-                                }
-                            }
-                        })
+                            })
+                        }
                     }
                 }
             }
@@ -2820,7 +2951,7 @@ module.exports = {
                                         c = 99
                                         if (player.roles.cache.has(alive.id)) {
                                             db.set(`potion_${witch[b]}`, null)
-                                            db.set(`witchAbil_${witch[b]}`, "yes")
+                                            db.set(`witchAbil_${witch[b]}`, 1)
                                             illusionist.send(`${getEmoji("guard", client)} Player **${disguise.nickname} ${disguise.user.username}** could not be disguised!`)
                                             illusionist.send(`${alive}`)
                                             chan.send(`${getEmoji("potion", client)} Your potion saved **${disguise.nickname} ${disguise.user.username}**!`)
@@ -2986,8 +3117,8 @@ module.exports = {
                                                 ctar.send(`${alive}`)
                                                 wwChat.send(`Player **${guy.nickname} ${guy.user.username}** could not be converted! They were either protected, a solo killer, the Cursed or the Headhunter's target!`)
                                                 conversion = "0"
-                                                db.set(`potion_${chan.id}`, null)
-                                                db.set(`witchAbil_${chan.id}`, "1")
+                                                db.set(`potion_${witch[x]}`, null)
+                                                db.set(`witchAbil_${witch[x]}`, 1)
                                             }
                                         }
                                     }
@@ -3205,7 +3336,7 @@ module.exports = {
         // zombie CONVERSION
         let bitten = db
             .all()
-            .filter((data) => data.ID.startsWith("bitten"))
+            .filter((data) => data.ID.startsWith("bitten_"))
             .sort((a, b) => b.data - a.data)
         for (let i = 0; i < bitten.length; i++) {
             let chan = message.guild.channels.cache.get(bitten[i].ID.split("_")[1])
@@ -3213,9 +3344,10 @@ module.exports = {
                 for (let j = 1; j <= alive.members.size + dead.members.size; j++) {
                     let tempguy = message.guild.members.cache.find((m) => m.nickname === j.toString())
                     if (tempguy) {
-                        if (tempguy.roles.cache.has(alive.id)) {
+                        if (tempguy.roles.cache.has(alive.id) && !killedplayers.includes(tempguy.id)) {
                             if (chan.permissionsFor(tempguy).has(["VIEW_CHANNEL", "READ_MESSAGE_HISTORY"])) {
                                 db.set(`role_${tempguy.id}`, "Zombie")
+                                db.set(`bittenAt_${tempguy.id}`, day)
                                 db.delete(`bitten_${chan.id}`)
                                 chan.permissionOverwrites.edit(tempguy.id, {
                                     VIEW_CHANNEL: false,
@@ -3227,7 +3359,7 @@ module.exports = {
                                     parent: "892046231516368906",
                                 })
                                 ff.permissionOverwrites.create(tempguy.id, {
-                                    SEND_MESSAGES: false,
+                                    SEND_MESSAGES: true,
                                     VIEW_CHANNEL: true,
                                     READ_MESSAGE_HISTORY: true,
                                 })
@@ -3252,9 +3384,9 @@ module.exports = {
                                 })
                                 await ff.send(getRole("zombie").description)
                                 let tee = await ff.send(`${alive}`)
-                                await tee.delete({ timeout: 3000 })
+                                setTimeout(() => tee.delete(), 3000)
                                 zombies.permissionOverwrites.edit(tempguy.id, {
-                                    SEND_MESSAGES: true,
+                                    SEND_MESSAGES: false,
                                     VIEW_CHANNEL: true,
                                     READ_MESSAGE_HISTORY: true,
                                 })
@@ -3371,7 +3503,7 @@ module.exports = {
                             zombies.send(`${getEmoji("guard", client)} Player **${guy.nickname} ${guy.user.username}** could not be bitten!`)
                             brains[i] = "0"
                             db.set(`potion_${chan.id}`, null)
-                            db.set(`witchAbil_${chan.id}`, "yes")
+                            db.set(`witchAbil_${witch[j]}`, 1)
                         }
                     }
                 }
@@ -3469,6 +3601,20 @@ module.exports = {
                 }
             }
         }
+
+        // kill zombies
+        let allZombiePlayers = db
+            .all()
+            .filter((data) => data.ID.startsWith("role_") && db.get(data.ID) === "Zombie")
+            .map((data) => data.ID.split("_")[1])
+        allZombiePlayers.forEach(async (zombPlayer) => {
+            if (db.get(`bittenAt_${zombPlayer}`) + 3 <= day) {
+                let zombGuy = await message.guild.members.fetch(zombPlayer)
+                dayChat.send(`${getEmoji("zombie", client)} Player **${zombGuy.nickname} ${zombGuy.user?.username}** was the Zombie. They have lived for 3 days and will now rot to death.`)
+                zombGuy.roles.add(dead.id)
+                zombGuy.roles.remove(alive.id)
+            }
+        })
 
         // bandits unable to speak in their chat
         for (let i = 0; i < bandits.length; i++) {
@@ -3584,8 +3730,15 @@ module.exports = {
                 let suspects = []
                 let targetFailed = true
                 let chan = message.guild.channels.cache.get(sheriff[i])
-                let snipe = db.get(`snipe_${chan.id}`)
-                if (snipe != null) {
+                let theSheriffs = alive.members.cache.filter((mem) => db.get(`role_${mem.id}`) === "Sheriff")
+                let theOneSheriff = null
+                theSheriffs.forEach((sheriffPlayer) => {
+                    if (chan.permissionsFor(sheriffPlayer.id).has("VIEW_CHANNEL")) {
+                        theOneSheriff = sheriffPlayer
+                    }
+                })
+                let snipe = db.get(`snipe_${chan.id}`) || false
+                if (snipe && theOneSheriff !== null) {
                     let guy = message.guild.members.cache.find((m) => m.nickname === snipe)
                     if (guy) {
                         console.log(snipe)
@@ -3644,8 +3797,8 @@ module.exports = {
                             chan.send(`${getEmoji("suspect", client)} You could not get any information last night!`)
                         }
                     }
-                    db.set(`snipe_${chan.id}`, null)
                 }
+                db.set(`snipe_${chan.id}`, null)
             }
         }, 4000)
 
@@ -3724,7 +3877,7 @@ module.exports = {
                                         for (let z = 1; z <= alive.members.size + dead.members.size; z++) {
                                             let guuy = message.guild.members.cache.find((m) => m.nickname === z.toString())
                                             if (guuy.roles.cache.has(alive.id)) {
-                                                if (db.get(`role_${guuy.id}`) != "President") {
+                                                if (db.get(`role_${guuy.id}`) !== "President" && db.get(`role_${guuy.id}`) !== "Cupid") {
                                                     alivePlayers.push(guuy.id)
                                                 }
                                             }
@@ -3740,7 +3893,7 @@ module.exports = {
                                         for (let z = 1; z <= alive.members.size + dead.members.size; z++) {
                                             let guuy = message.guild.members.cache.find((m) => m.nickname === z.toString())
                                             if (guuy.roles.cache.has(alive.id)) {
-                                                if (db.get(`role_${guuy.id}`) != "President" && guuy != guy1) {
+                                                if (db.get(`role_${guuy.id}`) != "President" && guuy != guy1 && db.get(`role_${guuy.id}`) !== "Cupid") {
                                                     alivePlayers.push(guuy.id)
                                                 }
                                             }
