@@ -1,7 +1,7 @@
 const db = require("quick.db")
 const { MessageButton, MessageActionRow } = require("discord.js")
 
-const { getEmoji, getRole, fn } = require("../../config")
+const { getEmoji, getRole, fn, ids } = require("../../config")
 function peaceCheck(message) {
     let prog = message.guild.channels.cache.filter((c) => c.name === "priv-prognosticator").map((x) => x.id)
     let nightCount = Math.floor(db.get(`gamePhase`) / 3) + 1
@@ -27,7 +27,6 @@ module.exports = {
         let votechat = message.guild.channels.cache.find((c) => c.name === "vote-chat")
         let narrator = message.guild.roles.cache.find((r) => r.name === "Narrator")
         let mininarr = message.guild.roles.cache.find((r) => r.name === "Narrator Trainee")
-        let aww = message.guild.channels.cache.filter((c) => c.name === "priv-astral-wolf").map((x) => x.id)
         let dayChat = message.guild.channels.cache.find((c) => c.name === "day-chat")
         let wwChat = message.guild.channels.cache.find((c) => c.name === "werewolves-chat")
         let lynched = "yes"
@@ -82,7 +81,6 @@ module.exports = {
       }
     }
     allvotes.sort((a,b) => a - b)
-
     let tv = 0
     for (let i = 0 ; i < allvotes.length ; i++) {
       for (let j = i ; j < allvotes.length ; j++) {
@@ -98,22 +96,18 @@ module.exports = {
         }
       }
     }
-
     console.log(allvotes)
     console.log(votenumber)
-
     for (let i = 0 ; i < allvotes.length ; i++) {
       if (allvotes[i] == allvotes[i+1]) {
         allvotes.splice(i, 1)
         i = i + 1
       }
     }
-
     let requiredvotes = Math.floor(alive.members.size / 2)
     let highestvote = Math.max(...votenumber)
     votenumber.splice(votenumber.indexOf(highestvote), 1)
     let sndvote = Math.max(...votenumber)
-
     if (highestvote == sndvote || highestvote < requiredvotes) {
       args[0] = "0"
     } else {
@@ -304,7 +298,6 @@ module.exports = {
                                     chan.send({ content: "Jack is trick-or-treating and has decided to visit your house, Will you choose to trick or treat?", components: [row] })
                                 }
                             }
-
                             chan.permissionOverwrites.edit(guy.id, {
                                 SEND_MESSAGES: false,
                             })
@@ -337,7 +330,7 @@ module.exports = {
                                         dayChat.send(`${getEmoji("corrupt", client)} The Corruptor killed **${guy.nickname} ${guy.user.username}**!`)
                                         guy.roles.add(dead.id)
                                         guy.roles.remove(alive.id)
-                                        guy.roles.add("777400587276255262")
+                                        guy.roles.add(ids.corrupted)
                                     }
                                     if (player.roles.cache.has(alive.id)) {
                                         for (let d = 1; d < 17; d++) {
@@ -350,7 +343,7 @@ module.exports = {
                                                             dayChat.send(`${getEmoji("corrupt", client)} The Corruptor killed **${cguy.nickname} ${cguy.user.username}**!`)
                                                             cguy.roles.add(dead.id)
                                                             cguy.roles.remove(alive.id)
-                                                            cguy.roles.add("777400587276255262")
+                                                            cguy.roles.add(ids.corrupted)
                                                         }
                                                     }
                                                 }
@@ -527,7 +520,9 @@ module.exports = {
                     if (rrrr.includes("wolf")) {
                         if (who.roles.cache.has(alive.id)) {
                             wwChat.permissionOverwrites.edit(who.id, {
+                                VIEW_CHANNEL: true,
                                 SEND_MESSAGES: true,
+                                READ_MESSAGE_HISTORY: true,
                             })
                         } else {
                             wwChat.permissionOverwrites.edit(who.id, {
@@ -538,8 +533,8 @@ module.exports = {
                     }
                 }
             }
-
-            for (let x = 0; x < aww.length; x++) {
+            
+                        for (let x = 0; x < aww.length; x++) {
                 let astral = message.guild.channels.cache.get(aww[x])
                 for (let j = 1; j <= alive.members.size + dead.members.size; j++) {
                     let who = message.guild.members.cache.find((m) => m.nickname === j.toString())
@@ -685,6 +680,10 @@ module.exports = {
                                                         SEND_MESSAGES: false,
                                                     })
                                                     jailedchat.send(`You are in a deep sleep! You cannot use your abilities this night!`)
+                                                    // send a message for jailer
+                                                    jailers.forEach((jailerPlayer) => {
+                                                        jailerPlayer.send(`${getEmoji("nightmared", client)} The player you have jailed has been nightmared!`)
+                                                    })
                                                 }
                                             }, 3000)
 
@@ -727,6 +726,12 @@ module.exports = {
             message.guild.channels.cache
                 .find((c) => c.name === "vote-chat")
                 .permissionOverwrites.edit(alive.id, {
+                    VIEW_CHANNEL: true,
+                })
+
+            message.guild.channels.cache
+                .find((c) => c.name === "vote-chat")
+                .permissionOverwrites.edit(dead.id, {
                     VIEW_CHANNEL: true,
                 })
 
@@ -789,9 +794,10 @@ module.exports = {
                 let tempguy = message.guild.members.cache.find((m) => m.nickname === i.toString())
                 if (tempguy) {
                     if (tempguy.roles.cache.has(alive.id)) {
-                        if (zombies.permissionsFor(tempguy).has(["VIEW_CHANNEL", "READ_MESSAGE_HISTORY"])) {
+                        if (db.get(`role_${tempguy.id}`) === "Zombie") {
                             zombies.permissionOverwrites.edit(tempguy.id, {
                                 SEND_MESSAGES: true,
+                                READ_MESSAGE_HISTORY: true,
                             })
                         }
                     }
