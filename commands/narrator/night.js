@@ -534,8 +534,8 @@ module.exports = {
                     }
                 }
             }
-            
-                        for (let x = 0; x < aww.length; x++) {
+
+            for (let x = 0; x < aww.length; x++) {
                 let astral = message.guild.channels.cache.get(aww[x])
                 for (let j = 1; j <= alive.members.size + dead.members.size; j++) {
                     let who = message.guild.members.cache.find((m) => m.nickname === j.toString())
