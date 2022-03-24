@@ -21,6 +21,7 @@ module.exports = {
         let jailed = message.guild.channels.cache.find((c) => c.name === "jailed-chat")
         let jailer = message.guild.channels.cache.filter((c) => c.name === "priv-jailer").map((x) => x.id)
         let jack = message.guild.channels.cache.filter((c) => c.name === "priv-jack").map((x) => x.id)
+        let aww = message.guild.channels.cache.filter((c) => c.name === "priv-astral-wolf").map((x) => x.id)
         let sk = message.guild.channels.cache.filter((c) => c.name === "priv-serial-killer").map((x) => x.id)
         let alchemist = message.guild.channels.cache.filter((c) => c.name === "priv-alchemist").map((x) => x.id)
         let hacker = message.guild.channels.cache.filter((c) => c.name === "priv-hacker").map((x) => x.id)
@@ -81,6 +82,22 @@ module.exports = {
                 }
             }
         }
+        
+        // deletes blessed seer channel
+                for (let m = 1; m <= alive.members.size + dead.members.size; m++) {
+            let tempguy = message.guild.members.cache.find((me) => me.nickname === m.toString())
+                let allChannels = message.guild.channels.cache.filter((c) => c.name.startsWith("priv-")).map((x) => x.id)
+                for (let b = 0; b < allChannels.length; b++) {
+                    let tempchan = message.guild.channels.cache.get(allChannels[b])
+                    if (tempchan.permissionsFor(tempguy).has(["VIEW_CHANNEL", "READ_MESSAGE_HISTORY"])) {
+                        if (tempchan.name.includes("seer")) {
+                          if (db.get(`role_${tempguy.id}`) != "Seer") tempchan.delete()
+                        }
+                    }
+                }
+            }
+        }
+        
 
         // getting the dc their channel
         for (let k = 0; k < dc.length; k++) {
@@ -210,7 +227,7 @@ module.exports = {
         }
 
         // jack
-        for (let i = 0; i < jack.length; i++) {
+        /* for (let i = 0; i < jack.length; i++) {
             let tempchan = message.guild.channels.cache.get(jack[i])
 
             let theJack
@@ -331,7 +348,7 @@ module.exports = {
                     }
                 }
             }
-        }
+        } */
         // removing all kills if peace is activated
         for (let i = 0; i < prog.length; i++) {
             let peace = db.get(`peace_${prog[i]}`) || "no"
@@ -395,6 +412,24 @@ module.exports = {
                                             tempchan.send(`${alive}`)
                                             bhc.send(`${getEmoji("trap", client)} Your trap was triggered last night but your target was too strong.`)
                                             bhc.send(`${alive}`)
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                        if (secondhack[j] != "0") {
+                                                  for (let k = 0; k < aww.length; k++) {
+                            let blessed = db.get(`blessed_${aww[k]}`)
+                            if (blessed == secondhack[j]) {
+                                for (let l = 1; l <= alive.members.size + dead.members.size; l++) {
+                                    let ithink = message.guild.members.cache.find((m) => m.nickname === l.toString())
+                                    if (ithink.permissionsFor(guy).has(["VIEW_CHANNEL", "READ_MESSAGE_HISTORY"])) {
+                                        if (ithink.roles.cache.has(alive.id)) {
+                                            secondhack[j] = "0" // makes the cannibal's attack to the player none
+                                            l = 99
+                                            k = 99
+                                            tempchan.send(`${getEmoji("guard", client)} Player **${guy.nickname} ${guy.user.username}** could not be killed!`)
+                                            tempchan.send(`${alive}`)
                                         }
                                     }
                                 }
@@ -643,6 +678,25 @@ module.exports = {
                                     }
                                 }
                             }
+                        }
+                        if (eat[j] != "0") {
+                        for (let k = 0; k < aww.length; k++) {
+                            let blessed = db.get(`blessed_${aww[k]}`)
+                            if (blessed == eat[j]) {
+                                for (let l = 1; l <= alive.members.size + dead.members.size; l++) {
+                                    let ithink = message.guild.members.cache.find((m) => m.nickname === l.toString())
+                                    if (ithink.permissionsFor(guy).has(["VIEW_CHANNEL", "READ_MESSAGE_HISTORY"])) {
+                                        if (ithink.roles.cache.has(alive.id)) {
+                                            eat[j] = "0" // makes the cannibal's attack to the player none
+                                            l = 99
+                                            k = 99
+                                            tempchan.send(`${getEmoji("guard", client)} Player **${guy.nickname} ${guy.user.username}** could not be killed!`)
+                                            tempchan.send(`${alive}`)
+                                        }
+                                    }
+                                }
+                            }
+                        }
                         }
 
                         if (eat[j] != "0") {
@@ -914,6 +968,26 @@ module.exports = {
                         }
                     }
                 }
+                
+                if (kills[i] != "0") {
+                for (let k = 0; k < aww.length; k++) {
+                            let blessed = db.get(`blessed_${aww[k]}`)
+                            if (blessed == kills[i]) {
+                                for (let l = 1; l <= alive.members.size + dead.members.size; l++) {
+                                    let ithink = message.guild.members.cache.find((m) => m.nickname === l.toString())
+                                    if (ithink.permissionsFor(guy).has(["VIEW_CHANNEL", "READ_MESSAGE_HISTORY"])) {
+                                        if (ithink.roles.cache.has(alive.id)) {
+                                            kills[i] = "0" // makes the cannibal's attack to the player none
+                                            l = 99
+                                            k = 99
+                                            tempchan.send(`${getEmoji("guard", client)} Player **${guy.nickname} ${guy.user.username}** could not be killed!`)
+                                            tempchan.send(`${alive}`)
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                }
 
                 // checks if the user being killed is jailed
                 if (kills[i] != "0") {
@@ -1160,6 +1234,26 @@ module.exports = {
                                     j = 99
                                 }
                             }
+                        }
+                        
+                        if (hypnotized != "0") {
+                        for (let k = 0; k < aww.length; k++) {
+                            let blessed = db.get(`blessed_${aww[k]}`)
+                            if (blessed == hypnotized) {
+                                for (let l = 1; l <= alive.members.size + dead.members.size; l++) {
+                                    let ithink = message.guild.members.cache.find((m) => m.nickname === l.toString())
+                                    if (ithink.permissionsFor(guy).has(["VIEW_CHANNEL", "READ_MESSAGE_HISTORY"])) {
+                                        if (ithink.roles.cache.has(alive.id)) {
+                                            hypnotized = "0" // makes the cannibal's attack to the player none
+                                            l = 99
+                                            k = 99
+                                            tempchan.send(`${getEmoji("guard", client)} Player **${guy.nickname} ${guy.user.username}** could not be killed!`)
+                                            tempchan.send(`${alive}`)
+                                        }
+                                    }
+                                }
+                            }
+                        }
                         }
 
                         // checks if the user being killed is jailed
@@ -1449,6 +1543,22 @@ module.exports = {
                     }
                 }
             }
+            
+            for (let k = 0; k < aww.length; k++) {
+                            let blessed = db.get(`blessed_${aww[k]}`)
+                            if (blessed == ) {
+                                for (let l = 1; l <= alive.members.size + dead.members.size; l++) {
+                                    let ithink = message.guild.members.cache.find((m) => m.nickname === l.toString())
+                                    if (ithink.permissionsFor(guy).has(["VIEW_CHANNEL", "READ_MESSAGE_HISTORY"])) {
+                                        if (ithink.roles.cache.has(alive.id)) {
+                                            l = 99
+                                            k = 99
+                                            kills.push(dt)
+                                        }
+                                    }
+                                }
+                            }
+                        }
 
             // jailer
             if (jailed.permissionsFor(guy).has(["SEND_MESSAGES", "VIEW_CHANNEL"])) {
@@ -1635,6 +1745,25 @@ module.exports = {
                         }
                     }
                 }
+            }
+            if (wwKill != "0") {
+            for (let k = 0; k < aww.length; k++) {
+                            let blessed = db.get(`blessed_${aww[k]}`)
+                            if (blessed == wwKill) {
+                                for (let l = 1; l <= alive.members.size + dead.members.size; l++) {
+                                    let ithink = message.guild.members.cache.find((m) => m.nickname === l.toString())
+                                    if (ithink.permissionsFor(guy).has(["VIEW_CHANNEL", "READ_MESSAGE_HISTORY"])) {
+                                        if (ithink.roles.cache.has(alive.id)) {
+                                            wwKill = "0" // makes the cannibal's attack to the player none
+                                            l = 99
+                                            k = 99
+                                            tempchan.send(`${getEmoji("guard", client)} Player **${guy.nickname} ${guy.user.username}** could not be killed!`)
+                                            tempchan.send(`${alive}`)
+                                        }
+                                    }
+                                }
+                            }
+                        }
             }
 
             // checking if the player is jailed or not
@@ -2428,6 +2557,25 @@ module.exports = {
                                     }
                                 }
                             }
+                            
+                            if (glitch != "0") {                                for (let k = 0; k < aww.length; k++) {
+                            let blessed = db.get(`blessed_${aww[k]}`)
+                            if (blessed == glitch) {
+                                for (let l = 1; l <= alive.members.size + dead.members.size; l++) {
+                                    let ithink = message.guild.members.cache.find((m) => m.nickname === l.toString())
+                                    if (ithink.permissionsFor(guy).has(["VIEW_CHANNEL", "READ_MESSAGE_HISTORY"])) {
+                                        if (ithink.roles.cache.has(alive.id)) {
+                                            glitch = "0" // makes the cannibal's attack to the player none
+                                            l = 99
+                                            k = 99
+                                            tempchan.send(`${getEmoji("guard", client)} Player **${guy.nickname} ${guy.user.username}** could not be killed!`)
+                                            tempchan.send(`${alive}`)
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                            }
 
                             // jailer
                             if (glitch != "0") {
@@ -2904,6 +3052,26 @@ module.exports = {
                             }
                         }
                     }
+                    
+                    if (toDelude != "0") {
+                      for (let k = 0; k < aww.length; k++) {
+                            let blessed = db.get(`blessed_${aww[k]}`)
+                            if (blessed == toDelude) {
+                                for (let l = 1; l <= alive.members.size + dead.members.size; l++) {
+                                    let ithink = message.guild.members.cache.find((m) => m.nickname === l.toString())
+                                    if (ithink.permissionsFor(guy).has(["VIEW_CHANNEL", "READ_MESSAGE_HISTORY"])) {
+                                        if (ithink.roles.cache.has(alive.id)) {
+                                            toDelude = "0" // makes the cannibal's attack to the player none
+                                            l = 99
+                                            k = 99
+                                            tempchan.send(`${getEmoji("guard", client)} Player **${guy.nickname} ${guy.user.username}** could not be killed!`)
+                                            tempchan.send(`${alive}`)
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
                     // jailer protection
                     if (toDelude != "0") {
                         if (jailed.permissionsFor(disguise).has(["SEND_MESSAGES", "VIEW_CHANNEL"])) {
@@ -3079,6 +3247,25 @@ module.exports = {
                                             conversion = "0"
                                         }
                                     }
+                                    
+                                    if (conversion != "0") {
+                                      for (let k = 0; k < aww.length; k++) {
+                            let blessed = db.get(`blessed_${aww[k]}`)
+                            if (blessed == conversion) {
+                                for (let l = 1; l <= alive.members.size + dead.members.size; l++) {
+                                    let ithink = message.guild.members.cache.find((m) => m.nickname === l.toString())
+                                    if (ithink.permissionsFor(guy).has(["VIEW_CHANNEL", "READ_MESSAGE_HISTORY"])) {
+                                        if (ithink.roles.cache.has(alive.id)) {
+                                            conversion = "0" // makes the cannibal's attack to the player none
+                                            l = 99
+                                            k = 99
+                                            tempchan.send(`${getEmoji("guard", client)} Player **${guy.nickname} ${guy.user.username}** could not be killed!`)
+                                            tempchan.send(`${alive}`)
+                                        }
+                                    }
+                                }
+                            }
+                        }
 
                                     // jailer
                                     if (conversion != "0") {
@@ -3462,6 +3649,25 @@ module.exports = {
                         }
                     }
                 }
+                
+                if (brains[i] != "0") {
+                  for (let k = 0; k < aww.length; k++) {
+                            let blessed = db.get(`blessed_${aww[k]}`)
+                            if (blessed == brains[i]) {
+                                for (let l = 1; l <= alive.members.size + dead.members.size; l++) {
+                                    let ithink = message.guild.members.cache.find((m) => m.nickname === l.toString())
+                                    if (ithink.permissionsFor(guy).has(["VIEW_CHANNEL", "READ_MESSAGE_HISTORY"])) {
+                                        if (ithink.roles.cache.has(alive.id)) {
+                                            brains[i] = "0" // makes the cannibal's attack to the player none
+                                            l = 99
+                                            k = 99
+                                            tempchan.send(`${getEmoji("guard", client)} Player **${guy.nickname} ${guy.user.username}** could not be killed!`)
+                                            tempchan.send(`${alive}`)
+                                        }
+                                    }
+                                }
+                            }
+                        }
 
                 // jailer
                 if (brains[i] != "0") {
@@ -3675,7 +3881,24 @@ module.exports = {
                             }
                         }
                     }
-
+                    if (douses[j] != "0") {
+                      for (let k = 0; k < aww.length; k++) {
+                            let blessed = db.get(`blessed_${aww[k]}`)
+                            if (blessed == douses[j]) {
+                                for (let l = 1; l <= alive.members.size + dead.members.size; l++) {
+                                    let ithink = message.guild.members.cache.find((m) => m.nickname === l.toString())
+                                    if (ithink.permissionsFor(guy).has(["VIEW_CHANNEL", "READ_MESSAGE_HISTORY"])) {
+                                        if (ithink.roles.cache.has(alive.id)) {
+                                            douses[j] = "0" // makes the cannibal's attack to the player none
+                                            l = 99
+                                            k = 99
+                                            tempchan.send(`${getEmoji("guard", client)} Player **${guy.nickname} ${guy.user.username}** could not be killed!`)
+                                            tempchan.send(`${alive}`)
+                                        }
+                                    }
+                                }
+                            }
+                        }
                     // checking if the jailer has the user jailed!
                     if (douses[j] != "0") {
                         if (jailed.permissionsFor(guy).has(["VIEW_CHANNEL"])) {
