@@ -20,6 +20,7 @@ module.exports = {
     run: async (message, args, client) => {
         let sww = message.guild.channels.cache.filter((c) => c.name === "priv-shadow-wolf").map((x) => x.id)
         let nmww = message.guild.channels.cache.filter((c) => c.name === "priv-nightmare-werewolf").map((x) => x.id)
+        let aww = message.guild.channels.cache.filter((c) => c.name === "priv-astral-wolf").map((x) => x.id)
         let jailers = message.guild.channels.cache.filter((c) => c.name === "priv-jailer").map((x) => x.id)
         let jack = message.guild.channels.cache.filter((c) => c.name === "priv-jack").map((x) => x.id)
         let alive = message.guild.roles.cache.find((r) => r.name === "Alive")
