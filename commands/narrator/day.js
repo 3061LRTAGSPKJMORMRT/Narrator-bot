@@ -419,16 +419,16 @@ module.exports = {
                             for (let k = 0; k < aww.length; k++) {
                                 let blessed = db.get(`blessed_${aww[k]}`)
                                 if (blessed == secondhack[j]) {
-                                            if (guy.roles.cache.has(alive.id)) {
-                                                secondhack[j] = "0" // makes the cannibal's attack to the player none
-                                                l = 99
-                                                k = 99
-                                                tempchan.send(`${getEmoji("guard", client)} Player **${guy.nickname} ${guy.user.username}** could not be killed!`)
-                                                tempchan.send(`${alive}`)
-                                            }
-                                        }
+                                    if (guy.roles.cache.has(alive.id)) {
+                                        secondhack[j] = "0" // makes the cannibal's attack to the player none
+                                        l = 99
+                                        k = 99
+                                        tempchan.send(`${getEmoji("guard", client)} Player **${guy.nickname} ${guy.user.username}** could not be killed!`)
+                                        tempchan.send(`${alive}`)
                                     }
                                 }
+                            }
+                        }
                         if (secondhack[j] != "0") {
                             // jailer's protection
                             if (jailed.permissionsFor(guy).has(["SEND_MESSAGES", "VIEW_CHANNEL"])) {
