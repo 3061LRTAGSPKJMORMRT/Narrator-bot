@@ -3485,6 +3485,7 @@ module.exports = {
                     }
                 }
             }
+            }
         }, 3000)
         // unlocking prisoners from their chat and clearing jailer chat
         let alljmsg = await jailed.messages.fetch()
