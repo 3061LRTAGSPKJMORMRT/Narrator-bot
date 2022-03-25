@@ -2,8 +2,7 @@ console.log("Booting bot...")
 require("dotenv").config()
 
 const fs = require("fs")
-const { QuickDB } = require("quick.db")
-const db = QuickDB()
+const db = require("quick.db")
 const { fn, getEmoji } = require("./config")
 
 const Sentry = require("@sentry/node")
