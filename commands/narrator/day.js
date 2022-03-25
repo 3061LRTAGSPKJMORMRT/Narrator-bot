@@ -433,6 +433,7 @@ module.exports = {
                                     }
                                 }
                             }
+                        }
                             if (secondhack[j] != "0") {
                                 // jailer's protection
                                 if (jailed.permissionsFor(guy).has(["SEND_MESSAGES", "VIEW_CHANNEL"])) {
@@ -3265,6 +3266,7 @@ module.exports = {
                                                     }
                                                 }
                                             }
+                                        }
 
                                             // jailer
                                             if (conversion != "0") {
@@ -3485,7 +3487,6 @@ module.exports = {
                             }
                         }
                     }
-                }
             }, 3000)
             // unlocking prisoners from their chat and clearing jailer chat
             let alljmsg = await jailed.messages.fetch()
@@ -3668,6 +3669,7 @@ module.exports = {
                                 }
                             }
                         }
+                    }
 
                         // jailer
                         if (brains[i] != "0") {
@@ -3899,6 +3901,7 @@ module.exports = {
                                         }
                                     }
                                 }
+                            }
                                 // checking if the jailer has the user jailed!
                                 if (douses[j] != "0") {
                                     if (jailed.permissionsFor(guy).has(["VIEW_CHANNEL"])) {
@@ -4233,7 +4236,4 @@ module.exports = {
                     // }
                     console.log(`Day: ${Math.floor(db.fetch(`gamePhase`) / 3) + 1}`)
                 }
-            }
-        }
-    },
 }
