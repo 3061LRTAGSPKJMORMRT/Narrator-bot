@@ -419,9 +419,9 @@ module.exports = {
                             for (let k = 0; k < aww.length; k++) {
                                 let blessed = db.get(`blessed_${aww[k]}`)
                                 if (blessed == secondhack[j]) {
-                                    for (let l = 1; l <= alive.members.size + dead.members.size; l++) {
-                                        let ithink = message.guild.members.cache.find((m) => m.nickname === l.toString())
-                                        if (ithink.permissionsFor(guy).has(["VIEW_CHANNEL", "READ_MESSAGE_HISTORY"])) {
+                            let chans = message.guild.channels.cache.filter((c) => c.name === `priv-${role.toLowerCase().replace(" ", "-")}`).map((x) => x.id)
+                            for (let k = 0; k < chans.length; k++) {
+                                let ithinkchan = message.guild.channels.cache.get(chans[k])
                                             if (ithink.roles.cache.has(alive.id)) {
                                                 secondhack[j] = "0" // makes the cannibal's attack to the player none
                                                 l = 99
