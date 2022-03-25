@@ -576,7 +576,7 @@ module.exports = {
                                 })
                                 db.delete(`bless_${aww[x]}`)
                                 db.set(`usedBless_${aww[x]}`, true)
-                                db.set(`blessed_${aww[x}}`, guy.id)
+                                db.set(`blessed_${aww[x]}`, guy.id)
                             }
                         }
                     }
