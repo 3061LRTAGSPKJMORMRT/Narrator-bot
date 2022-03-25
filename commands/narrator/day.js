@@ -1545,7 +1545,7 @@ module.exports = {
             
             for (let k = 0; k < aww.length; k++) {
                             let blessed = db.get(`blessed_${aww[k]}`)
-                            if (blessed == ) {
+                            if (blessed == guy.nickname) {
                                 for (let l = 1; l <= alive.members.size + dead.members.size; l++) {
                                     let ithink = message.guild.members.cache.find((m) => m.nickname === l.toString())
                                     if (ithink.permissionsFor(guy).has(["VIEW_CHANNEL", "READ_MESSAGE_HISTORY"])) {
