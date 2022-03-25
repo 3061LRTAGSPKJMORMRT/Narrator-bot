@@ -4232,7 +4232,7 @@ module.exports = {
         //   dayChat.send(`${alive}`)
         // }
         console.log(`Day: ${Math.floor(db.fetch(`gamePhase`) / 3) + 1}`)
-    },
+    }
 }
 }
 }
