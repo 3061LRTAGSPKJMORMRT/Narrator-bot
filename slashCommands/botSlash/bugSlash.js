@@ -69,7 +69,7 @@ ${interaction.options.getString("part") || "Other"}`
         }
 
         let done = await client.github.request(`POST /repos/${github.org}/${github.repo}/issues`, issue)
-        interaction.reply({content: "No. We have too many bugs. To make a good image we won't accept more bug reports.", ephemeral: true})
+        interaction.reply({ content: "No. We have too many bugs. To make a good image we won't accept more bug reports.", ephemeral: true })
         //interaction.reply({ content: interaction.l10n("bugSuccess", { url: done.data.html_url }), ephemeral: true })
     },
 }
