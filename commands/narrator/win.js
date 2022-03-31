@@ -10,6 +10,7 @@ module.exports = {
     gameOnly: true,
     narratorOnly: true,
     run: async (message, args, client) => {
+        message.channel.send("I actually don't want anyone to win this game! I'll take the xp and add them to be.")
         let winTeam = args[0]?.toLowerCase()
         if (args.length < 2 || !xp.teamMultipliers[winTeam]) return message.channel.send("Please specify the winning team and its players! Valid teams are the following:\n" + Object.keys(xp.teamMultipliers).join(", "))
 

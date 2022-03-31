@@ -52,7 +52,7 @@ module.exports = (client) => {
   Gotta make you understand
   `)
             }
-
+            if(!message.member) return
             if (message.guild.id == "472261911526768642" && message.channel.name == "day-chat" && message.member.roles.cache.has(config.ids.alive) && message.content.length > 140) {
                 message.delete()
                 return message.channel.send("Maximum length for messages are 140 characters!")
