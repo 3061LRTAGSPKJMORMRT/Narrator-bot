@@ -44,7 +44,9 @@ module.exports = {
     },
     server: ["sim", "game"],
     run: async (interaction, client) => {
-        let body = `### What happened?
+        let body = `⚠⚠ WARNING | This issue was reported on April Fools | WARNING ⚠⚠
+        
+### What happened?
 
 ${interaction.options.getString("description")}
 
@@ -67,6 +69,7 @@ ${interaction.options.getString("part") || "Other"}`
         }
 
         let done = await client.github.request(`POST /repos/${github.org}/${github.repo}/issues`, issue)
-        interaction.reply({ content: interaction.l10n("bugSuccess", { url: done.data.html_url }), ephemeral: true })
+        interaction.reply({content: "No. We have too many bugs. To make a good image we won't accept more bug reports.", ephemeral: true})
+        //interaction.reply({ content: interaction.l10n("bugSuccess", { url: done.data.html_url }), ephemeral: true })
     },
 }
