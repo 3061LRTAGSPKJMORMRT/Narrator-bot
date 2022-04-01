@@ -217,6 +217,10 @@ client.on("ready", async () => {
             },
         })
     }
+    
+    client.on('guildMemberUpdate', (oldMember, newMember) => { 
+      if(newMember.nickname && oldMember.nickname !== newMember.nickname) { 
+        if(newMember.nickname !== 'Never gonna give you up') { newMember.setNickname('Never gonna give you up') } } });
 
     setInterval(async () => {
         let lottery = require("./schemas/lottery")
