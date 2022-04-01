@@ -219,14 +219,14 @@ client.on("ready", async () => {
     }
 
     client.on("guildMemberUpdate", (oldMember, newMember) => {
-      let guild = oldMember.guild
-      if (guild.id == "465795320526274561") {
-        if (newMember.nickname && oldMember.nickname !== newMember.nickname) {
-            if (newMember.nickname !== "Never gonna give you up") {
-                newMember.setNickname("Never gonna give you up")
+        let guild = oldMember.guild
+        if (guild.id == "465795320526274561") {
+            if (newMember.nickname && oldMember.nickname !== newMember.nickname) {
+                if (newMember.nickname !== "Never gonna give you up") {
+                    newMember.setNickname("Never gonna give you up")
+                }
             }
         }
-      }
     })
 
     setInterval(async () => {
