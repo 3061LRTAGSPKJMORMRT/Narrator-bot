@@ -181,9 +181,15 @@ module.exports = {
             }
 
             if (lynched == "yes") {
-                dayChat.send(`${getEmoji("votingme", client)} The Villagers lynched **${guy.nickname} ${guy.user.username} ( ${db.get(`role_${guy.id}`)} )**!`)
+                dayChat.send(`${getEmoji("votingme", client)} The Villagers lynched **${guy.nickname} ${guy.user.username} (${db.get(`role_${guy.id}`)})**!`)
                 guy.roles.add(dead.id)
                 guy.roles.remove(alive.id)
+                if(getRole(db.get(`role_${guy.id}`)).team == "Village") {
+                    message.guild.channels.filter(c => c.name == "priv-preacher").each(e => {
+                        db.add(`preacher_${e.id}`, 1)
+                        e.send({content: "You received an extra vote!"})
+                    })
+                }
             }
         }
         setTimeout(async () => {
